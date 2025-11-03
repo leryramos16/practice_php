@@ -56,8 +56,8 @@ include 'inc\header.php';
 <div class="card"  style="width: 18rem;">
   <div class="card-body <?= $task['status'] === 'done' ? 'bg-success-subtle' : 'bg-light'; ?>">
     <h5 class="card-title"> <?= htmlspecialchars($task['task_name']) ?></h5>
-    <h6 class="card-subtitle mb-2 text-muted"><?= htmlspecialchars($task['time_to_prepare']) ?></h6>
-    <p class="card-text"><?= htmlspecialchars($task['task_date']) ?></p>
+    <h6 class="card-subtitle mb-2 text-muted"><?= date('g:i A', strtotime($task['time_to_prepare'])) ?></h6>
+    <p class="card-text"><?= date('F j, Y', strtotime($task['task_date'])) ?></p>
     <p class="card-text"><?= htmlspecialchars($task['note']) ?></p>
     <a href="<?= ROOT ?>/planner/delete/<?= $task['id'] ?>" class="btn btn-danger btn-sm">Cancel/Delete</a>
     <?php if ($task['status'] === 'done'): ?>

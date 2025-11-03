@@ -1,10 +1,37 @@
 <?php
 $title = "My Fit App";
 include 'inc/header.php';
+$url = "https://api.openweathermap.org/data/2.5/weather?q=Manila&appid=YOUR_API_KEY&units=metric";
 ?>
 
-<p>You are now logged in.</p>
-<p>Ready for today’s workout?</p>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">Upcoming Tasks</h5>
+      </div>
+      <div class="modal-body">
+        <?php if (!empty($upcomingTasks)): ?>
+          <strong>Upcoming Tasks (Next 24 Hours):</strong><br>
+          <?php foreach ($upcomingTasks as $task): ?>
+            <?= htmlspecialchars($task['task_name']) ?> — 
+            <?= date('F j, Y', strtotime($task['task_date'])) ?> at 
+            <?= date('g:i A', strtotime($task['time_to_prepare'])) ?><br>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <em>No tasks in the next 24 hours.</em>
+        <?php endif; ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
  <div class="container mt-5">
   <?php if (!empty($success)): ?>
@@ -105,6 +132,14 @@ include 'inc/header.php';
             }
         });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+  myModal.show(); //  This automatically opens the modal when page loads
+});
+</script>
+
 
 <?php 
   include 'inc/footer.php';

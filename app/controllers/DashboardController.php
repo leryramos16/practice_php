@@ -18,9 +18,6 @@ class DashboardController
         session_start();
     }
 
-
-        
-
         if (!isset($_SESSION['user_id'])) {
             header("Location: " . ROOT . "/login");
             exit;
@@ -28,6 +25,12 @@ class DashboardController
 
         $user_id = $_SESSION['user_id'];
 
+        // i-load and Planner Model
+        $plannerModel = $this->model('Planner');
+
+        //kunin ang upcoming task sa loob ng 24 hours lang
+        $upcomingTasks = $plannerModel->getUpcomingTasks($user_id);
+        
         
         //Call model
          $this->workoutModel = $this->model('Workout');
@@ -35,11 +38,11 @@ class DashboardController
           $weeklyWorkouts = $this->workoutModel->countThisWeek($user_id);
 
         if ($weeklyWorkouts == 0) {
-            $workoutMessage = 'Start your workout Now!';
+            $workoutMessage = 'Start your weekly workout Now!';
             }
 
         if ($weeklyWorkouts >= 1) {
-            $workoutMessage = " Keep going! You’ve done " . $weeklyWorkouts . " workouts this week.";
+            $workoutMessage = " Keep going! You’ve done " . $weeklyWorkouts . " workout this week.";
         }  
 
         if ($weeklyWorkouts >= 2) {
@@ -98,7 +101,8 @@ class DashboardController
             'lastWorkoutDate' => $lastWorkoutDate,
             'success' => $success,
             'weeklyWorkouts' => $weeklyWorkouts,
-            'workoutMessage' => $workoutMessage
+            'workoutMessage' => $workoutMessage,
+            'upcomingTasks' => $upcomingTasks
         ];
 
 
