@@ -1,0 +1,83 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+class PlannerController
+{
+    use Controller;
+    public function index()
+    {
+         if(!isset($_SESSION['user_id'])) {
+            header('Location: ' . ROOT . '/login');
+            exit;
+        }
+
+        $plannerModel = $this->model('Planner');
+        $user_id = $_SESSION['user_id'];
+        // Fetch all todos for this user
+        $tasks = $plannerModel->getAllByUser($user_id);
+       
+
+        $data = [
+            'username' => $_SESSION['username'],
+            'tasks' => $tasks
+            
+        ];
+
+        $this->view('planner', $data);
+    }
+
+   public function add()
+   {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $user_id = $_SESSION['user_id'];
+        $task_name = trim($_POST['task_name']);
+        $time_to_prepare = $_POST['time_to_prepare'];
+        $task_date = $_POST['task_date'];
+        $note = trim($_POST['note']);
+
+        if(!empty($task_name) && !empty($time_to_prepare) && !empty($task_date) && !empty($note)) {
+            $plannerModel = $this->model('Planner');
+            $plannerModel->add($user_id, $task_name, $time_to_prepare, $task_date, $note);
+            $_SESSION['success'] = "Task added successfully";
+
+        } else {
+            $_SESSION['error'] = "Fill the fields!";
+        }
+        header('Location: ' . ROOT . '/planner');
+        exit;
+    }
+        $this->view('planner');
+   }
+
+    public function delete($id)
+    {
+
+        $plannerModel = $this->model('Planner');
+        $plannerModel->delete($id);
+
+        header('Location: ' . ROOT . '/planner');
+        exit;
+    }
+
+    public function done($id)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . ROOT . '/login');
+            exit;
+        }
+
+        $plannerModel = $this->model('Planner');
+        $plannerModel->markAsDone($id);
+
+        header('Location: ' . ROOT . '/planner');
+        exit;
+    }
+
+    
+       
+
+
+}

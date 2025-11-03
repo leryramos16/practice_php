@@ -1,0 +1,76 @@
+<?php 
+
+$title = 'Day Plan';
+include 'inc\header.php';
+
+?>
+
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success"><?= $_SESSION['success']; ?></div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
+
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card text-center p-4 shadow-sm" style="max-width: 400px; width: 100%; margin-top: 50px">
+    <h2>Plan Your Day</h2>
+    <form method="post" action="<?= ROOT ?>/planner/add">
+      <div class="form-floating mb-3">
+        <h5>What to do:</h5>
+        <input type="text" name="task_name" class="form-control" placeholder="Task / Want to do" required>
+      </div>
+      <div class="form-floating mb-3">
+        <h5>Time to prepare:</h5>
+        <input type="time" name="time_to_prepare" class="form-control" required>
+      </div>
+      <div class="form-floating mb-3">
+        <h5>Date of Task:</h5>
+        <input type="date" name="task_date" class="form-control" required>
+      </div>
+      <div class="form-floating mb-3">
+        <h5>Note:</h5>
+        <input type="text" name="note" class="form-control">
+      </div>
+      <div class="form-floating mb-3">
+        <button type="submit" class="btn btn-primary w-100">Add this Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="justify-content-center">
+  <div>
+   
+  </div>
+</div>
+
+ <div class="col-md-4 mb-4">
+   <h2>Task Lists</h2>
+ <?php foreach ($tasks as $task): ?>
+<div class="card"  style="width: 18rem;">
+  <div class="card-body <?= $task['status'] === 'done' ? 'bg-success-subtle' : 'bg-light'; ?>">
+    <h5 class="card-title"> <?= htmlspecialchars($task['task_name']) ?></h5>
+    <h6 class="card-subtitle mb-2 text-muted"><?= htmlspecialchars($task['time_to_prepare']) ?></h6>
+    <p class="card-text"><?= htmlspecialchars($task['task_date']) ?></p>
+    <p class="card-text"><?= htmlspecialchars($task['note']) ?></p>
+    <a href="<?= ROOT ?>/planner/delete/<?= $task['id'] ?>" class="btn btn-danger btn-sm">Cancel/Delete</a>
+    <?php if ($task['status'] === 'done'): ?>
+        <span class="badge bg-light text-success">Done ✓</span>
+    <?php else: ?>
+        <a href="<?= ROOT ?>/planner/done/<?= $task['id'] ?>" class="btn btn-success btn-sm">Mark as Done</a>
+    <?php endif; ?>
+  </div>
+</div>
+<?php endforeach; ?>
+ </div>
+
+ <?php 
+include 'inc/footer.php';
+
+?>

@@ -1,0 +1,111 @@
+<?php
+$title = "My Fit App";
+include 'inc/header.php';
+?>
+
+<p>You are now logged in.</p>
+<p>Ready for today’s workout?</p>
+
+ <div class="container mt-5">
+  <?php if (!empty($success)): ?>
+    <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert" text-center>
+        <?= htmlspecialchars($success) ?>
+    </div>
+  <?php endif; ?>
+      <h2 class="mb-3">Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>!</h2>
+  <?php if ($weeklyWorkouts >= 5): ?>
+      <div class="alert alert-success">
+          <span style="font-weight: bold;"><?= $workoutMessage?></span>
+      </div>
+<?php else: ?>
+      <div class="alert alert-info">
+        <span style="font-weight: bold;"><?= $workoutMessage?></span>
+      </div>
+<?php endif; ?>
+      <p class="text-muted">Here’s a quick overview of your workout.</p>
+
+      <!-- Quick Stats -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Total Workouts</h5>
+              <p class="display-6"><?= $totalWorkouts ?? 0; ?></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Last Workout</h5>
+              <p class="display-6"><?= htmlspecialchars($lastWorkoutDate ?? 'None'); ?></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Favorite Exercise</h5>
+              <p class="display-6"><?= htmlspecialchars($favoriteExercise ?? '—'); ?></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Workouts -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Recent Workouts</h5>
+          <a href="<?= ROOT ?>/workout/add" class="btn btn-primary btn-sm">Start Your Workout</a>
+        </div>
+        <div class="card-body">
+          <?php if (!empty($workouts)): ?>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Reps</th>
+                  <th>Sets</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($workouts as $w): ?>
+                  <tr>
+                    <td><?= htmlspecialchars($w['exercise']); ?></td>
+                    <td><?= htmlspecialchars($w['reps']); ?></td>
+                    <td><?= htmlspecialchars($w['sets']); ?></td>
+                    <td><?= date("F j, Y ", strtotime($w['date'])); ?></td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          <?php else: ?>
+            <p class="text-muted">No workouts recorded yet. Start your first one!</p>
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+
+          
+ <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const alert = document.getElementById("successAlert");
+        if (alert) {
+            // Wait 3 seconds, then fade it out
+            setTimeout(() => {
+                alert.classList.remove("show"); // triggers Bootstrap fade animation
+                alert.classList.add("fade");
+                
+                // Then remove it completely after fade (0.5s later)
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            }, 3000); // 3000 = 3 seconds
+            }
+        });
+</script>
+
+<?php 
+  include 'inc/footer.php';
+?>
