@@ -46,7 +46,7 @@ class Planner
     //kinukuha lang ang tasks sa loob ng 24 hours
     public function getUpcomingTasks($user_id)
     {
-        //Current datetime
+        // Current date and time
         $now = date('Y-m-d H:i:s');
         // 24 hours from now
         $nextDay = date('Y-m-d H:i:s', strtotime('+1 day'));
@@ -54,11 +54,13 @@ class Planner
         $sql = "SELECT task_name, task_date, time_to_prepare
                 FROM tasks
                 WHERE user_id = ?
-                AND CONCAT(task_date, ' ', time_to_prepare) BETWEEN ? AND ?
+                AND TIMESTAMP(task_date, time_to_prepare) BETWEEN ? AND ?
                 ORDER BY task_date ASC, time_to_prepare ASC";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$user_id, $now, $nextDay]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 }

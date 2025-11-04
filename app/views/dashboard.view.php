@@ -1,7 +1,6 @@
 <?php
 $title = "My Fit App";
 include 'inc/header.php';
-$url = "https://api.openweathermap.org/data/2.5/weather?q=Manila&appid=YOUR_API_KEY&units=metric";
 ?>
 
 <!-- Bootstrap Modal -->
@@ -14,11 +13,15 @@ $url = "https://api.openweathermap.org/data/2.5/weather?q=Manila&appid=YOUR_API_
       <div class="modal-body">
         <?php if (!empty($upcomingTasks)): ?>
           <strong>Upcoming Tasks (Next 24 Hours):</strong><br>
-          <?php foreach ($upcomingTasks as $task): ?>
+          <?php $now = strtotime('now');
+            foreach ($upcomingTasks as $task):
+            $taskDateTime = strtotime($task['task_date'] . ' ' . $task['time_to_prepare']);
+            if ($taskDateTime > $now): ?> <!-- Hide past tasks -->
             <?= htmlspecialchars($task['task_name']) ?> — 
             <?= date('F j, Y', strtotime($task['task_date'])) ?> at 
             <?= date('g:i A', strtotime($task['time_to_prepare'])) ?><br>
-          <?php endforeach; ?>
+          <?php endif; 
+                endforeach; ?>
         <?php else: ?>
           <em>No tasks in the next 24 hours.</em>
         <?php endif; ?>

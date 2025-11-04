@@ -1,5 +1,8 @@
 <?php
 
+// Set timezone to Philippine time
+date_default_timezone_set('Asia/Manila');
+
 session_start();
 
 require "../app/core/init.php";
