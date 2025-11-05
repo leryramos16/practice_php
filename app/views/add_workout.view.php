@@ -36,6 +36,10 @@
                 </datalist>
     </div>
 
+    <div class="text-center">
+        <img id="exercisePreview" src="" style="max-width:100px; display:none; margin-top:0px; border-radius:5px;">
+    </div>
+
 
         <div class="mb-3">
             <label for="reps" class="form-label">Reps</label>
@@ -55,5 +59,39 @@
     </div>
 </div>
 
-</body>
-</html>
+
+<script>
+    const exerciseInput = document.getElementById('exercise');
+    const previewImg = document.getElementById('exercisePreview');
+    
+    // Map exercise names to GIF file paths or URLs
+    const exerciseGifs = {
+    "Push-ups": "<?= ROOT?>/assets/images/pushups.gif",
+    "Sit-ups": "<?= ROOT?>/assets/images/situps.gif",
+    "Squats": "<?= ROOT?>/assets/images/squats.gif",
+    "Plank": "<?= ROOT?>/assets/images/plank.gif",
+    "Burpees": "<?= ROOT?>/assets/images/burpees.gif",
+    "Jumping Jacks": "<?= ROOT?>/assets/images/jumpingjacks.gif",
+    "Lunges": "<?= ROOT?>/assets/images/lunges.gif",
+    "Pull-ups": "<?= ROOT?>/assets/images/pullups.gif"
+  };
+
+  // Listen for changes in the input
+  exerciseInput.addEventListener('input', function() {
+    const selectedExercise = this.value;
+    const gifPath = exerciseGifs[selectedExercise];
+
+    if (gifPath) {
+        previewImg.src = gifPath;
+        previewImg.style.display = 'block';
+    } else{
+        previewImg.style.display = 'none';
+    }
+  });
+
+
+</script>
+
+<?php
+include 'inc/footer.php';
+?>
