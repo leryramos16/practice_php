@@ -37,6 +37,26 @@ include 'inc/header.php';
     </tbody>
 </table>
 
+ <!-- Pang hide ng alerts -->
+  <script>
+  // Wait for the page to fully load
+  document.addEventListener("DOMContentLoaded", function() {
+    // Select all alert elements
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(function(alert) {
+      // After 3 seconds, start fading out
+      setTimeout(function() {
+        alert.style.transition = "opacity 0.5s ease";
+        alert.style.opacity = "0";
+        // After fading, remove it completely
+        setTimeout(function() {
+          alert.remove();
+        }, 500); // matches the transition time
+      }, 3000); // delay before fade (3 seconds)
+    });
+  });
+</script>
 
 <?php 
   include 'inc/footer.php';

@@ -51,9 +51,10 @@ class Planner
         // 24 hours from now
         $nextDay = date('Y-m-d H:i:s', strtotime('+1 day'));
 
-        $sql = "SELECT task_name, task_date, time_to_prepare
+        $sql = "SELECT task_name, task_date, time_to_prepare, status
                 FROM tasks
                 WHERE user_id = ?
+                AND status != 'done'  -- ibukod ang done ang status
                 AND TIMESTAMP(task_date, time_to_prepare) BETWEEN ? AND ?
                 ORDER BY task_date ASC, time_to_prepare ASC";
 

@@ -1,3 +1,8 @@
+<?php 
+$title = 'Edit Contact';
+include 'inc/header.php';
+?>
+
 <h2>Edit Contact</h2>
 
 <form method="POST">

@@ -36,9 +36,9 @@ class PlannerController
         $task_name = trim($_POST['task_name']);
         $time_to_prepare = $_POST['time_to_prepare'];
         $task_date = $_POST['task_date'];
-        $note = trim($_POST['note']);
+        $note = !empty(trim($_POST['note'])) ? trim($_POST['note']) : null; //para optional ang note
 
-        if(!empty($task_name) && !empty($time_to_prepare) && !empty($task_date) && !empty($note)) {
+        if(!empty($task_name) && !empty($time_to_prepare) && !empty($task_date)) {
             $plannerModel = $this->model('Planner');
             $plannerModel->add($user_id, $task_name, $time_to_prepare, $task_date, $note);
             $_SESSION['success'] = "Task added successfully";
@@ -57,6 +57,7 @@ class PlannerController
 
         $plannerModel = $this->model('Planner');
         $plannerModel->delete($id);
+        $_SESSION['error'] = "Task Deleted";
 
         header('Location: ' . ROOT . '/planner');
         exit;
@@ -71,6 +72,7 @@ class PlannerController
 
         $plannerModel = $this->model('Planner');
         $plannerModel->markAsDone($id);
+        $_SESSION['success'] = "Task Done";
 
         header('Location: ' . ROOT . '/planner');
         exit;

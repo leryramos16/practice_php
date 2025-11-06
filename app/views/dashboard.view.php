@@ -16,7 +16,7 @@ include 'inc/header.php';
           <?php $now = strtotime('now');
             foreach ($upcomingTasks as $task):
             $taskDateTime = strtotime($task['task_date'] . ' ' . $task['time_to_prepare']);
-            if ($taskDateTime > $now): ?> <!-- Hide past tasks -->
+            if ($taskDateTime > $now && $task['status'] != 'done'): ?> <!-- Hide past tasks tsaka pag done na ang task -->
             <?= htmlspecialchars($task['task_name']) ?> — 
             <?= date('F j, Y', strtotime($task['task_date'])) ?> at 
             <?= date('g:i A', strtotime($task['time_to_prepare'])) ?><br>
@@ -117,7 +117,7 @@ include 'inc/header.php';
       </div>
     </div>
 
-          
+ <!--workout added alert-->
  <script>
         document.addEventListener("DOMContentLoaded", function() {
         const alert = document.getElementById("successAlert");

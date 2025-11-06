@@ -9,7 +9,7 @@
       content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
     />
     <meta name="generator" content="Astro v5.13.2" />
-    <title>My Web Details</title>
+    <title>My Website Details</title>
     <link
       rel="canonical"
 

@@ -4,17 +4,17 @@ $title = 'Day Plan';
 include 'inc\header.php';
 
 ?>
+<div class="container max-width: 200px text-center">
+  <?php if (isset($_SESSION['success'])): ?>
+      <div class="alert alert-success"><?= $_SESSION['success']; ?></div>
+      <?php unset($_SESSION['success']); ?>
+  <?php endif; ?>
 
-<?php if (isset($_SESSION['success'])): ?>
-    <div class="alert alert-success"><?= $_SESSION['success']; ?></div>
-    <?php unset($_SESSION['success']); ?>
-<?php endif; ?>
-
-<?php if (isset($_SESSION['error'])): ?>
-    <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
-    <?php unset($_SESSION['error']); ?>
-<?php endif; ?>
-
+  <?php if (isset($_SESSION['error'])): ?>
+      <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
+      <?php unset($_SESSION['error']); ?>
+  <?php endif; ?>
+</div>
 
 
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
@@ -35,7 +35,7 @@ include 'inc\header.php';
       </div>
       <div class="form-floating mb-3">
         <h5>Note:</h5>
-        <input type="text" name="note" class="form-control">
+        <input type="text" name="note" class="form-control" placeholder="Optional">
       </div>
       <div class="form-floating mb-3">
         <button type="submit" class="btn btn-primary w-100">Add this Task</button>
@@ -69,6 +69,29 @@ include 'inc\header.php';
 </div>
 <?php endforeach; ?>
  </div>
+
+
+
+ <!-- Pang hide ng alerts -->
+  <script>
+  // Wait for the page to fully load
+  document.addEventListener("DOMContentLoaded", function() {
+    // Select all alert elements
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(function(alert) {
+      // After 3 seconds, start fading out
+      setTimeout(function() {
+        alert.style.transition = "opacity 0.5s ease";
+        alert.style.opacity = "0";
+        // After fading, remove it completely
+        setTimeout(function() {
+          alert.remove();
+        }, 500); // matches the transition time
+      }, 3000); // delay before fade (3 seconds)
+    });
+  });
+</script>
 
  <?php 
 include 'inc/footer.php';
