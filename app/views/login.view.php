@@ -197,6 +197,13 @@
             <?= htmlspecialchars($error) ?>
         </div>
         <?php endif; ?>
+        <?php if (!empty($_SESSION['success'])): ?>
+      <div class="alert alert-success text-center">
+          <?= htmlspecialchars($_SESSION['success']); ?>
+      </div>
+  <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
         <img
           class="mb-4"
           src="<?=ROOT?>/assets/images/creator.jpg"
@@ -245,6 +252,9 @@
         </button>
         <a href="<?=ROOT?>">Home</a>
         <a href="<?=ROOT?>/register">Signup</a>
+        <div class="text-center mt-3">
+          <a href="<?= ROOT ?>/forgotpassword">Forgot your password?</a>
+        </div>
         <p class="mt-5 mb-3 text-body-secondary">&copy; 2025</p>
       </form>
     </main>

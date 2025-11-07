@@ -41,5 +41,12 @@ class User {
        
     }
 
+    public function updatePassword($user_id, $hashedPassword)
+    {
+        $sql = "UPDATE users SET password = ? WHERE id = ?";
+        $stmt =$this->db->prepare($sql);
+        return $stmt->execute([$hashedPassword, $user_id]); 
+    }
+
   
 }

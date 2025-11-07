@@ -70,7 +70,7 @@ class LoginController
         $data = $_SESSION['form_data'];
         unset($_SESSION['form_data']);
     }
-
+    
     $this->view('login', $data);
 
     }
