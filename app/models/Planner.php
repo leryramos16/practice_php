@@ -64,4 +64,17 @@ class Planner
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function autoMarkMissedTasks($user_id)
+    {
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE tasks SET status = 'missed'
+                WHERE user_id = :user_id
+                AND status != 'done'
+                AND status != 'missed'
+                AND TIMESTAMP(task_date, time_to_prepare) < :now";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['user_id' => $user_id, 'now' => $now]);
+    }
 }
+

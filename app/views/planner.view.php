@@ -62,6 +62,8 @@ include 'inc\header.php';
     <a href="<?= ROOT ?>/planner/delete/<?= $task['id'] ?>" class="btn btn-danger btn-sm">Cancel/Delete</a>
     <?php if ($task['status'] === 'done'): ?>
         <span class="badge bg-light text-success">Done ✓</span>
+    <?php elseif ($task['status'] === 'missed'): ?>
+        <span class="badge bg-light text-danger">Didn't Complete</span>
     <?php else: ?>
         <a href="<?= ROOT ?>/planner/done/<?= $task['id'] ?>" class="btn btn-success btn-sm">Mark as Done</a>
     <?php endif; ?>

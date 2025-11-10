@@ -16,6 +16,9 @@ class PlannerController
 
         $plannerModel = $this->model('Planner');
         $user_id = $_SESSION['user_id'];
+
+        // Automatic mag mark as missed ang task
+         $tasks = $plannerModel->autoMarkMissedTasks($user_id);
         // Fetch all todos for this user
         $tasks = $plannerModel->getAllByUser($user_id);
        
