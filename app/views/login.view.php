@@ -240,8 +240,8 @@
           <input
             class="form-check-input"
             type="checkbox"
-            value="remember-me"
-            id="checkDefault"
+            name="remember"
+            id="remember"
           />
           <label class="form-check-label" for="checkDefault">
             Remember me

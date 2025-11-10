@@ -51,8 +51,20 @@ class LoginController
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
-                $_SESSION['role'] = $user['role'];
+                
 
+            //Para sa remember me feature
+            if (!empty($_POST['remember'])) {
+                $token = bin2hex(random_bytes(32));
+
+                //isave ang token sa database
+                $userModel->updateRememberToken($user['id'], $token);
+
+                //pang set ng cookie(30 days to)
+                setcookie('remember_token', $token, time() + (86400 * 30), "/", "", false, true);
+
+            }
+            
                 header("Location: " . ROOT . "/dashboard");
                 exit;
             } else {

@@ -48,5 +48,18 @@ class User {
         return $stmt->execute([$hashedPassword, $user_id]); 
     }
 
-  
+    public function updateRememberToken($id, $token)
+    {
+        $sql = "UPDATE users SET remember_token = :token WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['token' => $token, 'id' => $id]);
+    }
+
+    public function findByToken($token)
+    {
+        $sql = "SELECT * FROM users WHERE remember_token = :token LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['token' => $token]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
