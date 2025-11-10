@@ -25,6 +25,11 @@ class DashboardController
 
         $user_id = $_SESSION['user_id'];
 
+        // Load the User model to get profile info
+        $userModel = $this->model('User');
+        $user = $userModel->getUserById($user_id);
+
+
         // i-load and Planner Model
         $plannerModel = $this->model('Planner');
 
@@ -102,7 +107,9 @@ class DashboardController
             'success' => $success,
             'weeklyWorkouts' => $weeklyWorkouts,
             'workoutMessage' => $workoutMessage,
-            'upcomingTasks' => $upcomingTasks
+            'upcomingTasks' => $upcomingTasks,
+            'profile_image' => $user['profile_image'] ?? 'default.jpg'
+
         ];
 
 

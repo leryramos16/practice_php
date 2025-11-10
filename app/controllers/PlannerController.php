@@ -17,7 +17,7 @@ class PlannerController
         $plannerModel = $this->model('Planner');
         $user_id = $_SESSION['user_id'];
 
-        // Automatic mag mark as missed ang task
+        // kunin lahat ng task at iload ang model na may function na mark missed tasks
          $tasks = $plannerModel->autoMarkMissedTasks($user_id);
         // Fetch all todos for this user
         $tasks = $plannerModel->getAllByUser($user_id);
@@ -68,11 +68,6 @@ class PlannerController
 
     public function done($id)
     {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: ' . ROOT . '/login');
-            exit;
-        }
-
         $plannerModel = $this->model('Planner');
         $plannerModel->markAsDone($id);
         $_SESSION['success'] = "Task Done";

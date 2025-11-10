@@ -43,6 +43,14 @@ include 'inc/header.php';
         <?= htmlspecialchars($success) ?>
     </div>
   <?php endif; ?>
+      <img src="<?= ROOT ?>/uploads/<?= htmlspecialchars($profile_image) ?>" 
+         alt="Profile Image" 
+         class="rounded-circle me-3" 
+         width="50" height="50">
+         <a href="<?= ROOT ?>/profile" class="btn btn-outline-primary btn-sm mt-2">
+    <i class="bi bi-pencil"></i> Edit Profile
+</a>
+
       <h2 class="mb-3">Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>!</h2>
   <?php if ($weeklyWorkouts >= 5): ?>
       <div class="alert alert-success">

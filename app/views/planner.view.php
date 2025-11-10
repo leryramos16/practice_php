@@ -55,6 +55,15 @@ include 'inc\header.php';
  <?php foreach ($tasks as $task): ?>
 <div class="card"  style="width: 18rem;">
   <div class="card-body <?= $task['status'] === 'done' ? 'bg-success-subtle' : 'bg-light'; ?>">
+    
+    <?php if ($task['status'] === 'done'): ?>
+        <h4><span class="badge bg-light text-success">Finished!</span></h4>
+    <?php elseif ($task['status'] === 'missed'): ?>
+        <h4><span class="badge bg-light text-danger">You forgot this task!</span></h4>
+    <?php else: ?>
+        <h4><span class="badge bg-primary text-light">Upcoming...</span></h4>
+    <?php endif; ?>
+
     <h5 class="card-title"> <?= htmlspecialchars($task['task_name']) ?></h5>
     <h6 class="card-subtitle mb-2 text-muted"><?= date('g:i A', strtotime($task['time_to_prepare'])) ?></h6>
     <p class="card-text"><?= date('F j, Y', strtotime($task['task_date'])) ?></p>
@@ -63,7 +72,7 @@ include 'inc\header.php';
     <?php if ($task['status'] === 'done'): ?>
         <span class="badge bg-light text-success">Done ✓</span>
     <?php elseif ($task['status'] === 'missed'): ?>
-        <span class="badge bg-light text-danger">Didn't Complete</span>
+        <span class="badge bg-light text-danger">Didn't finished</span>
     <?php else: ?>
         <a href="<?= ROOT ?>/planner/done/<?= $task['id'] ?>" class="btn btn-success btn-sm">Mark as Done</a>
     <?php endif; ?>

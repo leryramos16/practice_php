@@ -62,4 +62,22 @@ class User {
         $stmt->execute(['token' => $token]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+
+    //Kunin ang user by id (para sa displaying info)
+    public function getUserById($id)
+    {
+        $sql = "SELECT * FROM users WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    //Update profile image filename sa database
+    public function updateProfileImage($user_id, $filename)
+    {
+        $sql = "UPDATE users SET profile_image = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$filename, $user_id]);
+    }
 }
