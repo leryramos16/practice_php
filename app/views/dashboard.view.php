@@ -27,6 +27,7 @@ include 'inc/header.php';
         <?php endif; ?>
       </div>
       <div class="modal-footer">
+        <a class="btn btn-primary" href="<?= ROOT?>/planner">Add task</a>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
