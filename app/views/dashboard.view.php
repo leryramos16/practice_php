@@ -3,12 +3,13 @@ $title = "My Fit App";
 include 'inc/header.php';
 ?>
 
+
 <!-- Bootstrap Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="myModalLabel">Upcoming Tasks</h5>
+        <h5 class="bi bi-megaphone"> Upcoming Tasks</h5>
       </div>
       <div class="modal-body">
         <?php if (!empty($upcomingTasks)): ?>
@@ -47,9 +48,9 @@ include 'inc/header.php';
          alt="Profile Image" 
          class="rounded-circle me-3" 
          width="50" height="50">
-         <a href="<?= ROOT ?>/profile" class="btn btn-outline-primary btn-sm mt-2">
-    <i class="bi bi-pencil"></i> Edit Profile
-</a>
+        <a href="<?= ROOT ?>/profile" class="btn btn-outline-primary btn-sm mt-2">
+           <i class="bi bi-pencil-square"></i> Edit Profile
+        </a>
 
       <h2 class="mb-3">Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>!</h2>
   <?php if ($weeklyWorkouts >= 5): ?>

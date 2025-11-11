@@ -243,7 +243,7 @@
             name="remember"
             id="remember"
           />
-          <label class="form-check-label" for="checkDefault">
+          <label class="form-check-label">
             Remember me
           </label>
         </div>

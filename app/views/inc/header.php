@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? $title : 'My App'; ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -37,17 +37,26 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
            <h6 class="dropdown-header"><?= htmlspecialchars($_SESSION['username']); ?></h6> 
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="<?= ROOT ?>/profile">Profile Settings</a>
+          <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends Lists</a>
+          <a class="dropdown-item" href="<?= ROOT ?>/friends/requests">Friends Requests</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?= ROOT ?>/logout">Logout</a>
         </div>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    <form action="<?= ROOT ?>/friends/search" method="POST" class="form-inline my-2 my-lg-0">
+  <input 
+    class="form-control mr-sm-2" 
+    type="search" 
+    name="search" 
+    placeholder="Search users..." 
+    aria-label="Search"
+   
+  >
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+
   </div>
 </nav>
 

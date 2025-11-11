@@ -2,6 +2,30 @@
 require 'inc/header.php';
 ?>
 
+<?php
+    $current_user = $_SESSION['user_id'];
+    $profile_user = $user['id'];
+
+    $friendModel = new Friend();
+    $isFriend = $friendModel->isFriend($current_user, $profile_user);
+?>
+
+<?php if ($current_user != $profile_user): ?>
+    <div style="margin-top: 10px;">
+
+        <?php if ($isFriend): ?>
+            <button disabled class="btn btn-success">✅ Friends</button>
+
+        <?php else: ?>
+            <a href="<?= ROOT ?>/friend/add/<?= $profile_user ?>" class="btn btn-primary">
+                ➕ Add Friend
+            </a>
+        <?php endif; ?>
+
+    </div>
+<?php endif; ?>
+
+
 
 <div class="container mt-5" style="max-width: 500px;">
     <h2 class="mb-4 text-center">Profile Settings</h2>
@@ -31,8 +55,8 @@ require 'inc/header.php';
         </div>
         <button type="submit" class="btn btn-primary w-100">Update Image</button>
     </form>
-
-    <div class="text-center mt-3">
-        <a href="<?= ROOT ?>/dashboard" class="btn btn-secondary">Back to Dashboard</a>
-    </div>
 </div>
+
+<?php
+require 'inc/footer.php';
+?>
