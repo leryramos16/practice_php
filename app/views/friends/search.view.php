@@ -1,30 +1,89 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 
 
-<div class="container mt-4">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-4">
     <h2>Search Results</h2>
-    
 
-    <?php if (!empty($results)): ?>
-        <ul class="list-group">
-            <?php foreach ($results as $user): ?>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <img src="<?= ROOT ?>/uploads/<?= htmlspecialchars($user['profile_image']) ?>" 
-                             alt="Profile" width="40" height="40" class="rounded-circle mr-2">
-                        <strong><?= htmlspecialchars($user['username']) ?></strong> 
-                        <small class="text-muted ml-2">(<?= htmlspecialchars($user['email']) ?>)</small>
-                    </div>
-                    <a href="<?= ROOT ?>/friends/add/<?= $user['id'] ?>" class="btn btn-primary text-light btn-sm">
-                         Add Friend
-                    </a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
-        <p class="text-muted mt-3">No users found.</p>
-    <?php endif; ?>
+    <?php foreach ($results as $user): ?>
+        <div class="d-flex align-items-center mb-3">
+            <img src="<?= ROOT ?>/uploads/<?= htmlspecialchars($user['profile_image']) ?>"
+                 width="40" height="40" style="border-radius:50%; margin-right:10px;">
+            <strong><?= htmlspecialchars($user['username']) ?></strong>
+
+            <div class="ml-auto">
+                <?php if ($user['friend_status'] === 'none'): ?>
+                    <button class="btn btn-primary btn-sm add-friend-btn" 
+                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                    <button class="btn btn-info btn-sm cancel-friend-btn d-none" 
+                      data-user-id="<?= $user['id'] ?>">Cancel Request</button>
+                <?php elseif ($user['friend_status'] === 'pending'): ?>
+                    <button class="btn btn-primary btn-sm add-friend-btn d-none" 
+                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                    <button class="btn btn-info btn-sm cancel-friend-btn" 
+                      data-user-id="<?= $user['id'] ?>">Cancel Request</button>
+                <?php elseif ($user['friend_status'] === 'accepted'): ?>
+                     <button class="btn btn-success btn-sm" disabled>Friends</button>
+                <?php elseif ($user['friend_status'] === 'declined'): ?>
+                    <button class="btn btn-warning btn-sm add-friend-btn" 
+                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                    <button class="btn btn-info btn-sm cancel-friend-btn d-none" 
+                      data-user-id="<?= $user['id'] ?>">Cancel Request</button>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
 </div>
 
 
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const addBtns = document.querySelectorAll('.add-friend-btn');
+  const cancelBtns = document.querySelectorAll('.cancel-friend-btn');
+
+  addBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const userId = btn.dataset.userId;
+
+      const res = await fetch(`<?= ROOT ?>/friends/add/${userId}`, {
+        method: 'POST'
+      });
+
+      if (res.ok) {
+        btn.classList.add('d-none');
+        btn.nextElementSibling.classList.remove('d-none'); // show cancel button
+      }
+    });
+  });
+
+  cancelBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const userId = btn.dataset.userId;
+
+      const res = await fetch(`<?= ROOT ?>/friends/cancel/${userId}`, {
+        method: 'POST'
+      });
+
+      if (res.ok) {
+        btn.classList.add('d-none');
+        btn.previousElementSibling.classList.remove('d-none'); // show add button
+      }
+    });
+  });
+});
+</script>
+
+
+</body>
+</html>

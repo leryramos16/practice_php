@@ -91,4 +91,39 @@ class Friend
         $stmt->execute([$searchTerm, $searchTerm, $current_user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getStatus($user_id, $other_id)
+{
+    // Avoid checking against self
+    if ($user_id == $other_id) return 'self';
+
+    $sql = "SELECT status 
+            FROM friends 
+            WHERE (sender_id = :user1 AND receiver_id = :user2)
+               OR (sender_id = :user2 AND receiver_id = :user1)
+            LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':user1' => $user_id, ':user2' => $other_id]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+        return $result['status']; // pending / accepted / declined
+    }
+
+    return 'none'; // no relationship yet
+}
+    public function cancelRequest($user_id, $other_id)
+{
+    $sql = "DELETE FROM friends 
+            WHERE ((sender_id = :user1 AND receiver_id = :user2)
+               OR (sender_id = :user2 AND receiver_id = :user1))
+              AND status = 'pending'";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        ':user1' => $user_id,
+        ':user2' => $other_id
+    ]);
+}
+
+
 }
