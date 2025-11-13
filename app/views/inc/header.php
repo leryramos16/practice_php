@@ -26,7 +26,13 @@
         <a class="nav-link" href="<?= ROOT ?>/workout">Favorite Musics</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/coach">Find Coach</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/friends">Friends</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/chat">Chat</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/phonebook">Phonebook</a>
