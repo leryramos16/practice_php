@@ -50,6 +50,7 @@ class LoginController
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['just_logged_in'] = true; //Welcome back appear isang beses lang pag log-in
                 $_SESSION['email'] = $user['email'];
                 
 

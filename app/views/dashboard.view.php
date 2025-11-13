@@ -36,6 +36,24 @@ include 'inc/header.php';
 </div>
 
 
+<!-- Weather Section -->
+<div id="weather-bar" style="
+  background: #ffffffff; 
+  color: #757575ff; 
+  text-align: center; 
+  padding: 5px 0; 
+  font-size: 14px; 
+  font-weight: bold;
+">
+  <span id="weather">Loading weather...</span>
+
+
+</div>
+
+
+
+
+
 
 
  <div class="container mt-5">
@@ -52,7 +70,23 @@ include 'inc/header.php';
            <i class="bi bi-pencil-square"></i> Edit Profile
         </a>
 
-      <h2 class="mb-3">Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>!</h2>
+      <!-- WELCOME BACK ONCE APPEAR AFTER LOG-IN-->
+    <?php if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in']): ?>
+  <div class="alert alert-light  text-center" id="welcome-message">
+    <h4 class="mb-3">Welcome back, <?= htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?>!</h2>
+  </div>
+
+  <script>
+    // Optional: fade out after 3 seconds
+    setTimeout(() => {
+      const msg = document.getElementById('welcome-message');
+      if (msg) msg.style.display = 'none';
+    }, 5000);
+  </script>
+
+  <?php unset($_SESSION['just_logged_in']); ?> <!-- ✅ Remove it after showing -->
+<?php endif; ?>
+
   <?php if ($weeklyWorkouts >= 5): ?>
       <div class="alert alert-success">
           <span style="font-weight: bold;"><?= $workoutMessage?></span>
@@ -152,6 +186,81 @@ document.addEventListener("DOMContentLoaded", function() {
   myModal.show(); //  This automatically opens the modal when page loads
 });
 </script>
+
+
+<script>
+const apiKey = "9cbee024427e295fe00ca4fa691a8578"; // your API key
+
+async function getWeatherByCoords(lat, lon) {
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+    );
+    const data = await res.json();
+    displayWeather(data);
+  } catch (err) {
+    console.error("Error fetching weather:", err);
+    document.getElementById("weather").textContent = "Weather unavailable";
+  }
+}
+
+async function getWeatherByCity(city = "Manila") {
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+    );
+    const data = await res.json();
+    displayWeather(data);
+  } catch (err) {
+    console.error("Error fetching weather:", err);
+    document.getElementById("weather").textContent = "Weather unavailable";
+  }
+}
+
+function displayWeather(data) {
+  if (!data || !data.main) {
+    document.getElementById("weather").textContent = "Weather unavailable";
+    return;
+  }
+  const temp = data.main.temp.toFixed(1);
+  const city = data.name;
+  const condition = data.weather[0].description;
+  const icon = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+
+  document.getElementById("weather").innerHTML = `
+    <img src="${icon}" alt="${condition}" style="width:20px; height:20px; vertical-align:middle;">
+    ${city}: ${temp}°C, ${condition.charAt(0).toUpperCase() + condition.slice(1)}
+  `;
+}
+
+// Try to get user location
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+    },
+    err => {
+      console.warn("Location denied, using default city.");
+      getWeatherByCity(); // fallback to Manila
+    }
+  );
+} else {
+  getWeatherByCity(); // if browser doesn't support geolocation
+}
+
+// Refresh every 10 minutes
+setInterval(() => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => getWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+      () => getWeatherByCity()
+    );
+  } else {
+    getWeatherByCity();
+  }
+}, 600000);
+</script>
+
 
 
 <?php 

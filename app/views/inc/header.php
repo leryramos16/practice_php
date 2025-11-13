@@ -34,7 +34,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="actionDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
-           <span id="account-friend-notif" class="badge bg-danger ms-2" style="display:none;">0</span>
+           <span id="account-friend-notif" class="badge badge-secondary bg-danger ms-2" style="display:none;">0</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
            <h6 class="dropdown-header"><?= htmlspecialchars($_SESSION['username']); ?></h6> 
@@ -42,7 +42,7 @@
           <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends Lists</a>
           <a class="dropdown-item" href="<?= ROOT ?>/friends/requests">
             Friends Requests
-            <span id="action-friend-notif" class="badge bg-danger" style="display:none;">0</span>
+            <span id="action-friend-notif" class="badge badge-secondary bg-danger" style="display:none;">0</span>
           </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<?= ROOT ?>/logout">Logout</a>
@@ -64,7 +64,7 @@
   </div>
 </nav>
 
-
+<!-- PARA BADGE SA FRIEND REQUEST -->
 <script>
 async function updateActionFriendNotifications() {
     try {
@@ -88,6 +88,7 @@ updateActionFriendNotifications();
 setInterval(updateActionFriendNotifications, 30000);
 </script>
 
+<!-- BADGE SA ACCOUNT DROPDOWN -->
 <script>
 async function updateAccountDropdownBadge() {
     try {
