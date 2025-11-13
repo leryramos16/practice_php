@@ -39,6 +39,7 @@ class FriendsController
         $friendModel = $this->model('Friend');
         $friendModel->acceptRequest($id);
         header('Location: ' . ROOT . '/friends/requests');
+        exit;
 
     }
 
@@ -95,6 +96,28 @@ class FriendsController
     exit;
 }
 
+public function decline($id)
+{
+    $friendModel = $this->model('Friend');
+    $friendModel->declineRequest($id);
 
+    header('Location: ' . ROOT . '/friends/requests');
+    exit;
+}
+
+public function notifications()
+{
+     if (!isset($_SESSION['user_id'])) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        return;
+    }
+
+    $userId = $_SESSION['user_id'];
+    $friendModel = $this->model('Friend');
+    $count = $friendModel->countPendingRequests($userId);
+
+    echo json_encode(['count' => $count]);
+}
     
 }

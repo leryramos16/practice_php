@@ -21,19 +21,26 @@ integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6J
                  width="40" height="40" style="border-radius:50%; margin-right:10px;">
             <strong><?= htmlspecialchars($user['username']) ?></strong>
 
-            <div class="ml-auto">
+            <div class="search-result ml-auto">
                 <?php if ($user['friend_status'] === 'none'): ?>
                     <button class="btn btn-primary btn-sm add-friend-btn" 
                       data-user-id="<?= $user['id'] ?>">Add Friend</button>
                     <button class="btn btn-info btn-sm cancel-friend-btn d-none" 
                       data-user-id="<?= $user['id'] ?>">Cancel Request</button>
+
                 <?php elseif ($user['friend_status'] === 'pending'): ?>
                     <button class="btn btn-primary btn-sm add-friend-btn d-none" 
                       data-user-id="<?= $user['id'] ?>">Add Friend</button>
                     <button class="btn btn-info btn-sm cancel-friend-btn" 
                       data-user-id="<?= $user['id'] ?>">Cancel Request</button>
+
+                    
+
                 <?php elseif ($user['friend_status'] === 'accepted'): ?>
-                     <button class="btn btn-success btn-sm" disabled>Friends</button>
+                     <button class="btn btn-success btn-sm" data-user-id="<?=  $user['id'] ?>" disabled>Friends</button>
+                     <button class="btn btn-primary btn-sm add-friend-btn d-none" 
+                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+
                 <?php elseif ($user['friend_status'] === 'declined'): ?>
                     <button class="btn btn-warning btn-sm add-friend-btn" 
                       data-user-id="<?= $user['id'] ?>">Add Friend</button>
@@ -44,6 +51,8 @@ integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6J
         </div>
     <?php endforeach; ?>
 </div>
+
+
 
 
 
@@ -81,6 +90,45 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+});
+</script>
+
+
+<!-- Sa accept script-->
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const acceptBtns = document.querySelectorAll('.accept-btn');
+   
+
+    acceptBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+
+            const res = await fetch(`<?= ROOT ?>/friends/accept/${id}`, {
+                method: 'POST'
+            });
+
+            if (res.ok) {
+                btn.classList.add('d-none'); // hide confirm
+                btn.nextElementSibling.classList.remove('d-none'); // show Friends
+            }
+        });
+    });
+
+    declineBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+
+            const res = await fetch(`<?= ROOT ?>/friends/decline/${id}`, {
+                method: 'POST'
+            });
+
+            if (res.ok) {
+                const requestDiv = btn.closest('.search-result');
+                requestDiv.remove();
+            }
+        });
+    });
 });
 </script>
 

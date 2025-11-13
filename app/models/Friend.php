@@ -40,14 +40,14 @@ class Friend
     {
         $sql = "UPDATE friends SET status = 'accepted' WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$friend_id]);
+        $stmt->execute([':id' => $friend_id]);
     }
 
     public function declineRequest($friend_id)
     {
         $sql = "UPDATE friends SET status = 'declined' WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$friend_id]);
+        $stmt->execute([':id' => $friend_id]);
     }
 
     public function getFriends($user_id)
@@ -82,35 +82,63 @@ class Friend
 
     public function searchUsers($keyword, $current_user_id)
     {
-        $sql = "SELECT id, username, email, profile_image
-                FROM users
-                WHERE (username LIKE ? OR email LIKE ?)
-                AND id != ?";
+        $sql = "SELECT u.id,
+                        u.username,
+                        u.email,
+                        u.profile_image,
+                        CASE
+                            WHEN f.status = 'accepted' THEN 'accepted'
+                            WHEN f.status = 'pending' AND f.sender_id = :current_user THEN 'pending_sent'
+                            WHEN f.status = 'pending' AND f.receiver_id = :current_user THEN 'pending_received'
+                            ELSE 'none'
+                        END as friend_status
+                FROM users u
+                LEFT JOIN friends f
+                    ON (
+                        (f.sender_id = :current_user AND f.receiver_id = u.id)
+                        OR (f.receiver_id = :current_user AND f.sender_id = u.id)
+                        )
+                WHERE (u.username LIKE :keyword OR u.email LIKE :keyword)
+                    AND u.id != :current_user";
         $stmt = $this->db->prepare($sql);
         $searchTerm = "%" . $keyword . "%";
-        $stmt->execute([$searchTerm, $searchTerm, $current_user_id]);
+        $stmt->execute([
+        ':keyword' => $searchTerm,
+        ':current_user' => $current_user_id
+    ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getStatus($user_id, $other_id)
+    public function getStatus($current_user_id, $other_id)
 {
-    // Avoid checking against self
-    if ($user_id == $other_id) return 'self';
-
-    $sql = "SELECT status 
-            FROM friends 
+    $sql = "SELECT sender_id, receiver_id, status
+            FROM friends
             WHERE (sender_id = :user1 AND receiver_id = :user2)
-               OR (sender_id = :user2 AND receiver_id = :user1)
+                OR (sender_id = :user2 AND receiver_id = :user1)
             LIMIT 1";
     $stmt = $this->db->prepare($sql);
-    $stmt->execute([':user1' => $user_id, ':user2' => $other_id]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute([':user1' => $current_user_id, ':user2' => $other_id]);
+    $friend = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result) {
-        return $result['status']; // pending / accepted / declined
+    if (!$friend) {
+        return 'none';
     }
 
-    return 'none'; // no relationship yet
+    if ($friend['status'] === 'pending') {
+
+        if ($friend['sender_id'] === $current_user_id) {
+            return 'pending_sent'; // user sent request -> display cancel
+        } else {
+            return 'pending_received'; // current user received request → show Accept/Decline
+        }
+    }
+
+     if ($friend['status'] === 'declined') {
+        return 'declined';
+    }
+
+    return 'none';
+
 }
     public function cancelRequest($user_id, $other_id)
 {
@@ -125,5 +153,16 @@ class Friend
     ]);
 }
 
+public function countPendingRequests($userId)
+{
+    $sql = "SELECT COUNT(*) AS total
+            FROM friends
+            WHERE receiver_id = :userId AND status = 'pending'";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':userId' => $userId]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? (int) $row['total'] : 0;
+}
 
 }
