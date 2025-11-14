@@ -41,7 +41,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
            <h6 class="dropdown-header"><?= htmlspecialchars($_SESSION['username']); ?></h6> 
-          <a class="dropdown-item" href="<?= ROOT ?>/profile">Profile Settings</a>
+          <a class="dropdown-item" href="<?= ROOT ?>/profile">Profile</a>
           <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends</a>
             
           <a class="dropdown-item" href="<?= ROOT ?>/friends/requests">

@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../views/inc/header.php';
             <img src="<?= ROOT ?>/uploads/<?= htmlspecialchars($f['profile_image']) ?>" width="40" height="40" style="border-radius:50%;">
             <strong><?= htmlspecialchars($f['username'])?></strong>
             <a href="<?= ROOT ?>/chat/index/<?= $f['id'] ?>" class="btn btn-sm btn-light">
-                <i class="bi bi-chat-dots"></i>
+               <i class="bi bi-chat"></i>
             </a>
         </div>
     <?php endforeach; ?>
