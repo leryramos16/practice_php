@@ -165,4 +165,5 @@ public function countPendingRequests($userId)
     return $row ? (int) $row['total'] : 0;
 }
 
+
 }

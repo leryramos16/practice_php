@@ -94,6 +94,15 @@
       }
     </style>
   </head>
+
+  <?php
+
+if (isset($_SESSION['user_id'])) {
+  header('Location: /myapp/public/dashboard');
+  exit;
+}
+
+?>
   <body class="d-flex align-items-center py-4 bg-body-tertiary">
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="check2" viewBox="0 0 16 16">

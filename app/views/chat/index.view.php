@@ -1,3 +1,8 @@
+<?php 
+require_once __DIR__ . '/../../views/inc/header.php';
+?>
+
+
 <div id="chat-box" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
     <?php foreach ($messages as $msg): ?>
     <div style="display: flex; align-items: center; margin-bottom: 10px;">
@@ -22,7 +27,13 @@
 <form id="chat-form">
     <input type="hidden" id="receiver_id" value="<?= $other_user_id ?>">
     <input type="text" id="message" placeholder="Type a message..." required>
-    <button type="submit">Send</button>
+    <button type="submit" style="background:none; border:none; padding:0;">
+        <i class="bi bi-send-fill"></i>
+    </button>
+    <button type="button" id="quick-workout" class="btn btn-sm btn-info">
+     <i class="bi bi-lightning-charge-fill"></i> Let's workout!
+</button>
+
 </form>
 
 <script>
@@ -50,8 +61,11 @@ setInterval(async () => {
     const messages = await res.json();
 
     const chatBox = document.getElementById('chat-box');
-    chatBox.innerHTML = '';
 
+    // Check if user is at the bottom
+    const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop === chatBox.clientHeight;
+
+    chatBox.innerHTML = ''; // rebuild messages
     messages.forEach(msg => {
         const div = document.createElement('div');
         div.style.display = 'flex';
@@ -71,9 +85,40 @@ setInterval(async () => {
         chatBox.appendChild(div);
     });
 
-    //chatBox.scrollTop = chatBox.scrollHeight;
+    // Only scroll if user was already at the bottom
+    if (isAtBottom) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
 }, 3000);
 
 
+// click event ng Lets workout button
+document.getElementById('quick-workout').addEventListener('click', async () => {
+    const receiver_id = document.getElementById('receiver_id').value;
+    const message = "Let's workout!";
+
+    const res = await fetch('<?=  ROOT ?>/chat/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `receiver_id=${receiver_id}&message=${encodeURIComponent(message)}`
+    });
+
+    if(res.ok){
+        location.reload();
+    }
+});
+
 </script>
 
+<script>
+const chatBox = document.getElementById('chat-box');
+chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+
+
+
+
+<?php 
+require_once __DIR__ . '/../../views/inc/footer.php';
+?>

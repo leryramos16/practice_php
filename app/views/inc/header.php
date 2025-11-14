@@ -32,9 +32,6 @@
         <a class="nav-link" href="<?= ROOT ?>/friends">Friends</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="<?= ROOT ?>/chat">Chat</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/phonebook">Phonebook</a>
       </li>
       <li class="nav-item dropdown">
@@ -45,7 +42,8 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
            <h6 class="dropdown-header"><?= htmlspecialchars($_SESSION['username']); ?></h6> 
           <a class="dropdown-item" href="<?= ROOT ?>/profile">Profile Settings</a>
-          <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends Lists</a>
+          <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends</a>
+            
           <a class="dropdown-item" href="<?= ROOT ?>/friends/requests">
             Friends Requests
             <span id="action-friend-notif" class="badge badge-secondary bg-danger" style="display:none;">0</span>
@@ -70,29 +68,6 @@
   </div>
 </nav>
 
-<!-- PARA BADGE SA FRIEND REQUEST -->
-<script>
-async function updateActionFriendNotifications() {
-    try {
-        const res = await fetch('<?= ROOT ?>/friends/notifications');
-        const data = await res.json();
-
-        const notif = document.getElementById('action-friend-notif');
-        if (notif) {
-            notif.textContent = data.count;
-            notif.style.display = data.count > 0 ? 'inline-block' : 'none';
-        }
-    } catch (err) {
-        console.error('Notification error:', err);
-    }
-}
-
-// Initial load
-updateActionFriendNotifications();
-
-// Optional: poll every 30 seconds
-setInterval(updateActionFriendNotifications, 30000);
-</script>
 
 <!-- BADGE SA ACCOUNT DROPDOWN -->
 <script>
@@ -117,6 +92,32 @@ updateAccountDropdownBadge();
 // Poll every 30 seconds
 setInterval(updateAccountDropdownBadge, 30000);
 </script>
+
+
+<!-- PARA BADGE SA FRIEND MESSAGE -->
+<script>
+async function updateFriendMessage() {
+    try {
+        const res = await fetch('<?= ROOT ?>/friends/notifications');
+        const data = await res.json();
+
+        const notif = document.getElementById('friend-message');
+        if (notif) {
+            notif.textContent = data.count;
+            notif.style.display = data.count > 0 ? 'inline-block' : 'none';
+        }
+    } catch (err) {
+        console.error('Notification error:', err);
+    }
+}
+
+// Initial load
+updateFriendMessage();
+
+// Optional: poll every 30 seconds
+setInterval(updateFriendMessage, 30000);
+</script>
+
 
 
 

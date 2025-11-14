@@ -17,7 +17,7 @@ class ChatController
             exit;
         }
 
-         $user_id = $_SESSION['user_id'];
+        $user_id = $_SESSION['user_id'];
         $chatModel = $this->model('Chat');
         $messages = $chatModel->getMessages($_SESSION['user_id'], $other_user_id);
 
@@ -51,5 +51,7 @@ class ChatController
 
     echo json_encode($messages);
 }
+
+
 
 }

@@ -11,8 +11,8 @@ class Chat
 
     public function sendMessage($sender_id, $receiver_id, $message)
     {
-        $sql = "INSERT INTO messages (sender_id, receiver_id, message) 
-                VALUES (:sender, :receiver, :message)";
+        $sql = "INSERT INTO messages (sender_id, receiver_id, message, is_read) 
+                VALUES (:sender, :receiver, :message, 0)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':sender' => $sender_id,
@@ -38,4 +38,6 @@ class Chat
         $stmt->execute([':user1' => $user1, ':user2' => $user2]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+   
 }
