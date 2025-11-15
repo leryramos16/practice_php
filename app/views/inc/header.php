@@ -34,6 +34,9 @@
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/phonebook">Phonebook</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/physique/upload">Share Physique</a>
+      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="actionDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
@@ -43,7 +46,6 @@
            <h6 class="dropdown-header"><?= htmlspecialchars($_SESSION['username']); ?></h6> 
           <a class="dropdown-item" href="<?= ROOT ?>/profile">Profile</a>
           <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends</a>
-            
           <a class="dropdown-item" href="<?= ROOT ?>/friends/requests">
             Friends Requests
             <span id="action-friend-notif" class="badge badge-secondary bg-danger" style="display:none;">0</span>
@@ -118,6 +120,52 @@ updateFriendMessage();
 setInterval(updateFriendMessage, 30000);
 </script>
 
+
+<script>
+async function updateActionFriendNotifications() {
+    try {
+        const res = await fetch('<?= ROOT ?>/friends/notifications');
+        const data = await res.json();
+
+        const notif = document.getElementById('action-friend-notif');
+        if (notif) {
+            notif.textContent = data.count;
+            notif.style.display = data.count > 0 ? 'inline-block' : 'none';
+        }
+    } catch (err) {
+        console.error('Notification error:', err);
+    }
+}
+
+// Initial load
+updateActionFriendNotifications();
+
+// Optional: poll every 30 seconds
+setInterval(updateActionFriendNotifications, 30000);
+</script>
+
+<script>
+async function updateAccountDropdownBadge() {
+    try {
+        const res = await fetch('<?= ROOT ?>/friends/notifications');
+        const data = await res.json();
+
+        const badge = document.getElementById('account-friend-notif');
+        if (badge) {
+            badge.textContent = data.count;
+            badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+        }
+    } catch (err) {
+        console.error('Notification error:', err);
+    }
+}
+
+// Initial load
+updateAccountDropdownBadge();
+
+// Poll every 30 seconds
+setInterval(updateAccountDropdownBadge, 30000);
+</script>
 
 
 

@@ -73,7 +73,7 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    //Update profile image filename sa database
+    //Update profile image sa database
     public function updateProfileImage($user_id, $filename)
     {
         $sql = "UPDATE users SET profile_image = ? WHERE id = ?";
