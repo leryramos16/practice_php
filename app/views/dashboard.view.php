@@ -143,9 +143,10 @@ include 'inc/header.php';
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <?php foreach ($workouts as $w): ?>
-                  <tr>
+              <tbody id="workout-rows">
+                <?php foreach ($workouts as $index => $w): ?>
+                  <!-- Show 10 rows lang-->
+                  <tr class="workout-row <?= $index >= 10 ? 'd-none' : '' ?>">
                     <td><?= htmlspecialchars($w['exercise']); ?></td>
                     <td><?= htmlspecialchars($w['reps']); ?></td>
                     <td><?= htmlspecialchars($w['sets']); ?></td>
@@ -154,6 +155,10 @@ include 'inc/header.php';
                 <?php endforeach; ?>
               </tbody>
             </table>
+            <?php if (count($workouts) > 10): ?>
+              <button id="show-more" class="btn btn-link mt-2">Show more</button>
+              <button id="show-less" class="btn btn-link mt-2 d-none">Show Less</button>
+              <?php endif; ?>
           <?php else: ?>
             <p class="text-muted">No workouts recorded yet. Start your first one!</p>
           <?php endif; ?>
@@ -185,6 +190,33 @@ document.addEventListener("DOMContentLoaded", function() {
   var myModal = new bootstrap.Modal(document.getElementById('myModal'));
   myModal.show(); //  This automatically opens the modal when page loads
 });
+
+// Reveal more rows Javascript gamit
+// SHOW MORE
+document.getElementById("show-more")?.addEventListener("click", function () {
+  const hiddenRows = document.querySelectorAll(".workout-row.d-none");
+
+  hiddenRows.forEach(row => row.classList.remove("d-none"));
+
+  // Hide Show More, show Show Less
+  this.classList.add("d-none");
+  document.getElementById("show-less").classList.remove("d-none");
+});
+
+// SHOW LESS
+document.getElementById("show-less")?.addEventListener("click", function () {
+  const rows = document.querySelectorAll(".workout-row");
+
+  // Hide everything after the first 10
+  rows.forEach((row, index) => {
+    if (index >= 10) row.classList.add("d-none");
+  });
+
+  // Hide Show Less, show Show More
+  this.classList.add("d-none");
+  document.getElementById("show-more").classList.remove("d-none");
+});
+
 </script>
 
 
