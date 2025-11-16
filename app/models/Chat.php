@@ -39,5 +39,49 @@ class Chat
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function countUnreadMessages($user_id)
+{
+    $sql = "SELECT COUNT(*) AS total 
+            FROM messages 
+            WHERE receiver_id = :id 
+              AND is_read = 0";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':id' => $user_id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? (int) $row['total'] : 0;
+}
+
+    public function markAsRead($sender_id, $receiver_id)
+{
+    $sql = "UPDATE messages
+            SET is_read = 1
+            WHERE sender_id = :sender
+              AND receiver_id = :receiver
+              AND is_read = 0";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([
+        ':sender' => $sender_id,
+        ':receiver' => $receiver_id
+    ]);
+}
+
+    public function countUnreadFromFriend($friend_id, $user_id)
+{
+        $sql = "SELECT COUNT(*) AS total 
+                FROM messages 
+                WHERE sender_id = :friend
+                AND receiver_id = :user
+                AND is_read = 0";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':friend' => $friend_id,
+            ':user' => $user_id
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['total'] : 0;
+}
+
    
 }

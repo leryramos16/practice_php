@@ -84,7 +84,7 @@ include 'inc/header.php';
     }, 5000);
   </script>
 
-  <?php unset($_SESSION['just_logged_in']); ?> <!-- ✅ Remove it after showing -->
+  <?php unset($_SESSION['just_logged_in']); ?> <!-- Remove it after showing -->
 <?php endif; ?>
 
   <?php if ($weeklyWorkouts >= 5): ?>

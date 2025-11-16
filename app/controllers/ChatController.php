@@ -21,6 +21,14 @@ class ChatController
         $chatModel = $this->model('Chat');
         $messages = $chatModel->getMessages($_SESSION['user_id'], $other_user_id);
 
+        // Mark messages as read
+        $chatModel->markAsRead($other_user_id, $_SESSION['user_id']);
+
+        // Get all messages between users
+        $messages = $chatModel->getMessages($_SESSION['user_id'], $other_user_id);
+
+        
+
         $this->view('chat/index', [
             'messages' => $messages,
             'other_user_id' => $other_user_id,
@@ -51,6 +59,17 @@ class ChatController
 
     echo json_encode($messages);
 }
+
+public function notifications()
+{
+    if (!isset($_SESSION['user_id'])) return;
+
+    $chatModel = $this->model('Chat');
+    $count = $chatModel->countUnreadMessages($_SESSION['user_id']);
+
+    echo json_encode(['count' => $count]);
+}
+
 
 
 

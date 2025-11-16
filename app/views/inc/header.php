@@ -37,6 +37,9 @@
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/physique/upload">Share Physique</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/physique/feed">Friends</a>
+      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="actionDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
@@ -45,7 +48,9 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
            <h6 class="dropdown-header"><?= htmlspecialchars($_SESSION['username']); ?></h6> 
           <a class="dropdown-item" href="<?= ROOT ?>/profile">Profile</a>
-          <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Friends</a>
+          <a class="dropdown-item" href="<?= ROOT ?>/friends/list">Chat Friends
+             <span id="chat-message-badge" class="badge badge-danger" style="display:none;">0</span>
+          </a>
           <a class="dropdown-item" href="<?= ROOT ?>/friends/requests">
             Friends Requests
             <span id="action-friend-notif" class="badge badge-secondary bg-danger" style="display:none;">0</span>
@@ -71,29 +76,6 @@
 </nav>
 
 
-<!-- BADGE SA ACCOUNT DROPDOWN -->
-<script>
-async function updateAccountDropdownBadge() {
-    try {
-        const res = await fetch('<?= ROOT ?>/friends/notifications');
-        const data = await res.json();
-
-        const badge = document.getElementById('account-friend-notif');
-        if (badge) {
-            badge.textContent = data.count;
-            badge.style.display = data.count > 0 ? 'inline-block' : 'none';
-        }
-    } catch (err) {
-        console.error('Notification error:', err);
-    }
-}
-
-// Initial load
-updateAccountDropdownBadge();
-
-// Poll every 30 seconds
-setInterval(updateAccountDropdownBadge, 30000);
-</script>
 
 
 <!-- PARA BADGE SA FRIEND MESSAGE -->
@@ -142,19 +124,68 @@ updateActionFriendNotifications();
 
 // Optional: poll every 30 seconds
 setInterval(updateActionFriendNotifications, 30000);
-</script>
 
-<script>
+
+//CHAT NOTIFICATION
+
+async function updateChatMessageBadge() {
+  try {
+    const res = await fetch('<?= ROOT ?>/chat/notifications');
+    const data = await res.json();
+
+    const badge = document.getElementById('chat-message-badge');
+    if(badge) {
+      badge.textContent = data.count;
+      badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+    }
+  } catch (err) {
+    console.error("Chat notification error:", err);
+  }
+}
+
+// update once
+updateChatMessageBadge();
+
+// update every 20 seconds
+setInterval(updateChatMessageBadge, 20000);
+
+//DROPDOWN BADGE
+
 async function updateAccountDropdownBadge() {
     try {
-        const res = await fetch('<?= ROOT ?>/friends/notifications');
-        const data = await res.json();
+        // Fetch friend request count
+        const resFriend = await fetch('<?= ROOT ?>/friends/notifications');
+        const dataFriend = await resFriend.json();
+        const friendCount = dataFriend.count || 0;
 
+        // Fetch unread chat messages count
+        const resChat = await fetch('<?= ROOT ?>/chat/notifications');
+        const dataChat = await resChat.json();
+        const chatCount = dataChat.count || 0;
+
+        // Total notifications
+        const totalCount = friendCount + chatCount;
+
+        // Update main account badge
         const badge = document.getElementById('account-friend-notif');
         if (badge) {
-            badge.textContent = data.count;
-            badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+            badge.textContent = totalCount;
+            badge.style.display = totalCount > 0 ? 'inline-block' : 'none';
         }
+
+        // Optional: update individual badges as well
+        const chatBadge = document.getElementById('chat-message-badge');
+        if (chatBadge) {
+            chatBadge.textContent = chatCount;
+            chatBadge.style.display = chatCount > 0 ? 'inline-block' : 'none';
+        }
+
+        const friendBadge = document.getElementById('action-friend-notif');
+        if (friendBadge) {
+            friendBadge.textContent = friendCount;
+            friendBadge.style.display = friendCount > 0 ? 'inline-block' : 'none';
+        }
+
     } catch (err) {
         console.error('Notification error:', err);
     }
@@ -163,9 +194,14 @@ async function updateAccountDropdownBadge() {
 // Initial load
 updateAccountDropdownBadge();
 
-// Poll every 30 seconds
-setInterval(updateAccountDropdownBadge, 30000);
+// Poll every 20-30 seconds
+setInterval(updateAccountDropdownBadge, 20000);
+
+
+
 </script>
+
+
 
 
 

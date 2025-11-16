@@ -45,10 +45,26 @@ class FriendsController
 
     public function list()
     {
-        $friendModel = $this->model('Friend');
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . ROOT . '/login');
+            exit;
+        }
+
         $user_id = $_SESSION['user_id'];
+
+        // Load models
+        $friendModel = $this->model('Friend');
+        $chatModel = $this->model('Chat');
+
+        // Get all friends
         $friends = $friendModel->getFriends($user_id);
 
+        // Attach unread message count
+        foreach ($friends as $key => $f) {
+            $friends[$key]['unread_count'] = $chatModel->countUnreadFromFriend($f['id'], $user_id);
+        }
+
+        // Send to view
         $this->view('friends/list', ['friends' => $friends]);
     }
 
