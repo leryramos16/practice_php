@@ -71,5 +71,37 @@ public function feed()
     $this->view('physique/feed', ['uploads' => $uploads]);
 }
 
+public function askRoutine($upload_id)
+{
+    $user_id = $_SESSION['user_id'];
+
+    // Use model properly
+    $physiqueModel = $this->model('Physique');
+    $chatModel = $this->model('Chat');
+
+    // Get the owner of the upload via model
+    $uploadOwner = $physiqueModel->getUploadOwner($upload_id);
+
+    // Check if owner exists and is not the current user
+    if ($uploadOwner && $uploadOwner['user_id'] != $user_id) {
+        $receiver_id = $uploadOwner['user_id'];
+        $message = "How did you achieve this? What's your routine?";
+
+        // Send message via Chat model
+        $chatModel->sendMessage($user_id, $receiver_id, $message);
+
+        // Redirect to chat page with receiver open
+        header('Location: ' . ROOT . '/chat/index/' . $receiver_id);
+        exit;
+    }
+
+    // Fallback: redirect to feed if something is wrong
+    header('Location: ' . ROOT . '/physique/feed');
+    exit;
+}
+
+
+
+
 
 }

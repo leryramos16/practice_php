@@ -14,15 +14,36 @@ require_once __DIR__ . '/../../views/inc/header.php';
         <div class="card-body">
             <p><?= htmlspecialchars($upload['description']) ?></p>
             <small><?= $upload['created_at'] ?></small>
-            <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="routineModal<?= $upload['id'] ?>">
-                Ask About Routine
-            </button>
+           <form method="post" action="<?= ROOT ?>/physique/askRoutine/<?= $upload['id'] ?>" style="display:inline;">
+                <button type="submit" class="btn btn-primary mt-2">
+                    Ask Routine
+                </button>
+        </form>
         </div>
     </div>
     <?php endforeach; ?>
 </div>
 
 
+
+<script>
+document.querySelectorAll('.ask-routine-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const uploadId = this.dataset.upload;
+
+        fetch('<?= ROOT ?>/physique/askRoutine/' + uploadId, {
+            method: 'POST'
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert('Routine question sent!');
+            // optionally change button text or disable it
+            this.disabled = true;
+            this.innerText = "Asked";
+        });
+    });
+});
+</script>
 
 <?php 
 require_once __DIR__ . '/../../views/inc/footer.php';

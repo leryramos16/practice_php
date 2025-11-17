@@ -50,4 +50,14 @@ class Physique
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }
+
+    public function getUploadOwner($upload_id)
+{
+    $sql = "SELECT user_id FROM physique_uploads WHERE id = :upload_id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':upload_id' => $upload_id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
 }
