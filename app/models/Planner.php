@@ -24,7 +24,7 @@ class Planner
                 VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$user_id, $task_name, $time_to_prepare, $task_date, $note]);
-
+        
     }
 
     public function delete($id)

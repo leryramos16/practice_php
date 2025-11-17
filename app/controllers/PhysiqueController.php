@@ -48,4 +48,28 @@ class PhysiqueController
 
     $this->view('physique/upload');
     }
+
+public function feed()
+{
+    $user_id = $_SESSION['user_id'];
+
+    $friendModel = new Friend();
+    $physiqueModel = new Physique();
+
+    // Step 1: get friends
+    $friends = $friendModel->getFriends($user_id);
+
+    // Step 2: extract friend IDs
+    $friend_ids = array_column($friends, 'id');
+
+    // Step 3: include your own user ID
+    $friend_ids[] = $user_id;
+
+    // Step 4: get uploads
+    $uploads = $physiqueModel->getFriendUploads($friend_ids);
+
+    $this->view('physique/feed', ['uploads' => $uploads]);
+}
+
+
 }
