@@ -1,10 +1,12 @@
-<form action="<?= ROOT ?>/physique/upload" method="post" enctype="multipart/form-data">
-    <textarea name="description" placeholder="Write something..." rows="2"></textarea>
-    <input type="file" name="physique_image" accept="image/*" required>
-    <button type="submit">Upload</button>
-</form>
+<?php 
+require_once __DIR__ . '/../../views/inc/header.php';
+?>
 
-<h2>Upload Physique</h2>
+
+
+
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100">
+    <h2>Share Your Physique</h2>
 
 <form method="POST" enctype="multipart/form-data">
     <label>Select Image</label>
@@ -15,3 +17,4 @@
 
     <button class="btn btn-primary mt-3">Upload</button>
 </form>
+</div>

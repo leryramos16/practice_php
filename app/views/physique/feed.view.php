@@ -15,8 +15,8 @@ require_once __DIR__ . '/../../views/inc/header.php';
             <p><?= htmlspecialchars($upload['description']) ?></p>
             <small><?= $upload['created_at'] ?></small>
            <form method="post" action="<?= ROOT ?>/physique/askRoutine/<?= $upload['id'] ?>" style="display:inline;">
-                <button type="submit" class="btn btn-primary mt-2">
-                    Ask Routine
+                <button type="submit" class="btn btn-light mt-2">
+                    Ask Routine<i class="bi bi-question"></i>
                 </button>
         </form>
         </div>
