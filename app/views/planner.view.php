@@ -27,11 +27,12 @@ include 'inc\header.php';
       </div>
       <div class="form-floating mb-3">
         <h5>Time to prepare:</h5>
-        <input type="time" name="time_to_prepare" class="form-control" required>
+        <input type="time" id="time_to_prepare" name="time_to_prepare" class="form-control" required>
       </div>
       <div class="form-floating mb-3">
         <h5>Date of Task:</h5>
-        <input type="date" name="task_date" class="form-control" required>
+        <?php $today = date('Y-m-d'); ?>
+          <input type="date" id="task_date" name="task_date" class="form-control" required min="<?= $today ?>">
       </div>
       <div class="form-floating mb-3">
         <h5>Note:</h5>
@@ -102,6 +103,25 @@ include 'inc\header.php';
       }, 3000); // delay before fade (3 seconds)
     });
   });
+
+//time and date JS
+const dateInput = document.getElementById('task_date');
+    const timeInput = document.getElementById('time_to_prepare');
+
+    dateInput.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        const today = new Date();
+
+        if (selectedDate.toDateString() === today.toDateString()) {
+            // If date is today, restrict time to now or later
+            let hours = today.getHours().toString().padStart(2, '0');
+            let minutes = today.getMinutes().toString().padStart(2, '0');
+            timeInput.min = `${hours}:${minutes}`;
+        } else {
+            // If future date, remove time restrictions
+            timeInput.min = "";
+        }
+    });
 </script>
 
  <?php 

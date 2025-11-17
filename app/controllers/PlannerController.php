@@ -39,6 +39,18 @@ class PlannerController
         $task_name = trim($_POST['task_name']);
         $time_to_prepare = $_POST['time_to_prepare'];
         $task_date = $_POST['task_date'];
+
+        $now = date('Y-m-d H:i');
+
+        $selected = $task_date . ' ' . $time_to_prepare;
+
+        if ($selected < $now) {
+        // reject
+        $_SESSION['error'] = "You cannot choose a past date or time.";
+        header('Location: ' . ROOT . 'planner');
+        exit;
+    }
+
         $note = !empty(trim($_POST['note'])) ? trim($_POST['note']) : null; //para optional ang note
 
         if(!empty($task_name) && !empty($time_to_prepare) && !empty($task_date)) {
