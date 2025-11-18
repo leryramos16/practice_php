@@ -77,24 +77,26 @@ class FriendsController
         $this->view('friends/requests', ['requests' => $requests]);
     }
 
-    public function search()
-    {
-        $user_id = $_SESSION['user_id'];
-        $friendModel = $this->model('Friend');
+ public function search()
+{
+    $user_id = $_SESSION['user_id'];
+    $friendModel = $this->model('Friend');
 
-        $results = [];
+    $results = [];
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['search'])) {
-            $keyword = trim($_POST['search']);
-            $results = $friendModel->searchUsers($keyword, $user_id);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['search'])) {
+        $keyword = trim($_POST['search']);
+        $results = $friendModel->searchUsers($keyword, $user_id);
 
-            foreach ($results as &$user) {
-                $user['friend_status'] = $friendModel->getStatus($user_id, $user['id']);
-            }
-        }
-
-        $this->view('friends/search', ['results' => $results]);
+        // Optional: remove this loop if SQL already provides friend_status
+        // foreach ($results as &$user) {
+        //     $user['friend_status'] = $friendModel->getStatus($user_id, $user['id']);
+        // }
     }
+
+    $this->view('friends/search', ['results' => $results]);
+}
+
 
     public function cancel($receiver_id)
 {

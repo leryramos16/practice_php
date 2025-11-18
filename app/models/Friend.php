@@ -81,33 +81,45 @@ class Friend
     }
 
     public function searchUsers($keyword, $current_user_id)
-    {
-        $sql = "SELECT u.id,
-                        u.username,
-                        u.email,
-                        u.profile_image,
-                        CASE
-                            WHEN f.status = 'accepted' THEN 'accepted'
-                            WHEN f.status = 'pending' AND f.sender_id = :current_user THEN 'pending_sent'
-                            WHEN f.status = 'pending' AND f.receiver_id = :current_user THEN 'pending_received'
-                            ELSE 'none'
-                        END as friend_status
-                FROM users u
-                LEFT JOIN friends f
-                    ON (
-                        (f.sender_id = :current_user AND f.receiver_id = u.id)
-                        OR (f.receiver_id = :current_user AND f.sender_id = u.id)
-                        )
-                WHERE (u.username LIKE :keyword OR u.email LIKE :keyword)
-                    AND u.id != :current_user";
-        $stmt = $this->db->prepare($sql);
-        $searchTerm = "%" . $keyword . "%";
-        $stmt->execute([
+{
+    $sql = "SELECT u.id,
+                   u.username,
+                   u.email,
+                   u.profile_image,
+
+                   CASE
+                       WHEN f.status = 'accepted' THEN 'accepted'
+                       WHEN f.status = 'declined' THEN 'declined'
+
+                       -- pending (both directions)
+                       WHEN f.status = 'pending' 
+                            AND (f.sender_id = :current_user OR f.receiver_id = :current_user)
+                            THEN 'pending'
+
+                       ELSE 'none'
+                   END as friend_status
+
+            FROM users u
+            LEFT JOIN friends f
+                ON (
+                    (f.sender_id = :current_user AND f.receiver_id = u.id)
+                 OR (f.receiver_id = :current_user AND f.sender_id = u.id)
+                )
+
+            WHERE (u.username LIKE :keyword OR u.email LIKE :keyword)
+              AND u.id != :current_user";
+
+    $stmt = $this->db->prepare($sql);
+    $searchTerm = "%" . $keyword . "%";
+
+    $stmt->execute([
         ':keyword' => $searchTerm,
         ':current_user' => $current_user_id
     ]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
     public function getStatus($current_user_id, $other_id)
 {
