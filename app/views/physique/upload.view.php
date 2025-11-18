@@ -18,3 +18,8 @@ require_once __DIR__ . '/../../views/inc/header.php';
     <button class="btn btn-primary mt-3">Upload</button>
 </form>
 </div>
+
+
+<?php 
+require_once __DIR__ . '/../../views/inc/footer.php';
+?>

@@ -12,7 +12,7 @@ include 'inc/header.php';
     <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
     <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
-<a href="<?= ROOT ?>/phonebook/add" class="btn btn-primary mt-3 mb-3">Add New Contact</a>
+<a href="<?= ROOT ?>/phonebook/add" class="btn btn-primary mt-3 mb-3">Add New Contact <i class="bi bi-plus-circle"></i></a>
 
 <table class="table table-bordered">
     <thead>
