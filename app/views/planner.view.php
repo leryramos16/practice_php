@@ -56,13 +56,13 @@ include 'inc\header.php';
  <?php foreach ($tasks as $task): ?>
 <div class="card"  style="width: 18rem;">
   <div class="card-body <?= $task['status'] === 'done' ? 'bg-success-subtle' : 'bg-light'; ?>">
-    
+    <i class="bi bi-pin-angle-fill mb-5"></i>
     <?php if ($task['status'] === 'done'): ?>
         <h4><span class="badge bg-light text-success">Finished!</span></h4>
     <?php elseif ($task['status'] === 'missed'): ?>
         <h4><span class="badge bg-light text-danger">You forgot this task!</span></h4>
     <?php else: ?>
-        <h4><span class="badge bg-primary text-light">Upcoming...</span></h4>
+        <h4><span class="badge bg-info text-light">Upcoming . . .</span></h4>
     <?php endif; ?>
 
     <h5 class="card-title"> <?= htmlspecialchars($task['task_name']) ?></h5>
