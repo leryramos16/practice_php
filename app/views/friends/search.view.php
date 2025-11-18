@@ -17,13 +17,13 @@ require_once __DIR__ . '/../../views/inc/header.php';
             <div class="search-result ml-auto">
                 <?php if ($user['friend_status'] === 'none'): ?>
                     <button class="btn btn-primary btn-sm add-friend-btn" 
-                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                      data-user-id="<?= $user['id'] ?>"><i class="bi bi-person-plus"></i> Add Friend</button>
                     <button class="btn btn-info btn-sm cancel-friend-btn d-none" 
                       data-user-id="<?= $user['id'] ?>">Cancel Request</button>
 
                 <?php elseif ($user['friend_status'] === 'pending'): ?>
                     <button class="btn btn-primary btn-sm add-friend-btn d-none" 
-                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                      data-user-id="<?= $user['id'] ?>"><i class="bi bi-person-plus"></i> Add Friend</button>
                     <button class="btn btn-info btn-sm cancel-friend-btn" 
                       data-user-id="<?= $user['id'] ?>">Cancel Request</button>
 
@@ -32,11 +32,11 @@ require_once __DIR__ . '/../../views/inc/header.php';
                 <?php elseif ($user['friend_status'] === 'accepted'): ?>
                      <button class="btn btn-success btn-sm" data-user-id="<?=  $user['id'] ?>" disabled>Friends</button>
                      <button class="btn btn-primary btn-sm add-friend-btn d-none" 
-                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                      data-user-id="<?= $user['id'] ?>"><i class="bi bi-person-plus"></i> Add Friend</button>
 
                 <?php elseif ($user['friend_status'] === 'declined'): ?>
                     <button class="btn btn-warning btn-sm add-friend-btn" 
-                      data-user-id="<?= $user['id'] ?>">Add Friend</button>
+                      data-user-id="<?= $user['id'] ?>"> <i class="bi bi-person-plus"></i> Add Friend</button>
                     <button class="btn btn-info btn-sm cancel-friend-btn d-none" 
                       data-user-id="<?= $user['id'] ?>">Cancel Request</button>
                 <?php endif; ?>
