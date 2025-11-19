@@ -88,7 +88,7 @@ public function feed()
     // add like info for each upload
     foreach ($uploads as &$upload) {
         $upload['liked'] = $physiqueModel->hasLiked($user_id, $upload['id']) ? true : false;
-        $upload['likes'] = $physiqueModel->likeCount($upload['id']) ?? 0;
+        $upload['likes'] = $physiqueModel->getLikeCount($upload['id']) ?? 0;
     }
 
     $this->view('physique/feed', ['uploads' => $uploads]);
@@ -128,23 +128,30 @@ public function askRoutine($upload_id)
 public function like($upload_id)
 {
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ' . ROOT . '/login');
+        http_response_code(403);
+        echo json_encode(['success' => false]);
         exit;
     }
 
     $user_id = $_SESSION['user_id'];
     $physiqueModel = $this->model('Physique');
 
-    // Check if already liked
     if ($physiqueModel->hasLiked($user_id, $upload_id)) {
-        // unlike
         $physiqueModel->unlike($user_id, $upload_id);
+        $liked = false;
     } else {
-        //Like 
         $physiqueModel->like($user_id, $upload_id);
+        $liked = true;
     }
 
-    header('Location: ' . ROOT . '/physique/feed');
+    // always get updated count
+    $likes = $physiqueModel->getLikeCount($upload_id);
+
+    echo json_encode([
+        'success' => true,
+        'liked'   => $liked,
+        'likes'   => $likes
+    ]);
     exit;
 }
 

@@ -83,11 +83,12 @@ class Physique
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function likeCount($upload_id)
-    {
-        $sql = "SELECT COUNT(*) FROM physique_likes WHERE upload_id = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$upload_id]);
-        return $stmt->fetchColumn();
-    }
+    public function getLikeCount($upload_id)
+{
+    $sql = "SELECT COUNT(*) FROM physique_likes WHERE upload_id = ?";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$upload_id]);
+    return $stmt->fetchColumn();
+}
+
 }

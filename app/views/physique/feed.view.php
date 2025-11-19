@@ -5,31 +5,47 @@ require_once __DIR__ . '/../../views/inc/header.php';
 <h2 class="text-center mb-4">Physique Feed</h2>
 
 <div class="d-flex flex-column justify-content-center align-items-center min-vh-100">
-    <?php foreach ($uploads as $upload): ?>
+
+<?php foreach ($uploads as $upload): ?>
     <div class="card mb-3" style="width:500px;">
+        
         <strong class="p-2"><?= htmlspecialchars($upload['username']) ?></strong> 
         <small><?= $upload['created_at'] ?></small>
+
         <div style="width:500px; height:500px; overflow:hidden;">
-            <img src="<?= ROOT ?>/<?= $upload['image_path'] ?>" class="card-img-top h-100 w-100" style="object-fit:cover;">
+            <img src="<?= ROOT ?>/<?= $upload['image_path'] ?>" 
+            class="card-img-top h-100 w-100" style="object-fit:cover;">
         </div>
+
         <div class="card-body">
             <p><?= htmlspecialchars($upload['description']) ?></p>
-            <form action="<?= ROOT ?>/physique/like/<?= $upload['id'] ?>" method="POST">
-    <button type="submit"
-    class="btn btn-sm <?= $upload['liked'] ? 'btn-danger' : 'btn-outline-danger' ?>">
-    <i class="bi bi-fire"></i><?= $upload['likes'] ?? 0 ?>
-</button>
-</form>
 
-           <form method="post" action="<?= ROOT ?>/physique/askRoutine/<?= $upload['id'] ?>" style="display:inline;">
+            <!-- LIKE BUTTON (AJAX) -->
+            <button 
+                class="btn btn-sm like-btn <?= $upload['liked'] ? 'btn-danger' : 'btn-outline-danger' ?>"
+                data-upload-id="<?= $upload['id'] ?>"
+            >
+                <i class="bi bi-fire"></i>
+                <span class="like-count"><?= $upload['likes'] ?></span>
+            </button>
+
+            <!-- Ask Routine -->
+             <div>
+                <form method="post" action="<?= ROOT ?>/physique/askRoutine/<?= $upload['id'] ?>" style="display:inline;">
                 <button type="submit" class="btn btn-light mt-2">
-                    Ask Routine<i class="bi bi-question"></i>
+                    Ask Routine <i class="bi bi-question"></i>
                 </button>
-        </form>
+            </form>
+             </div>
+            
+
         </div>
     </div>
-    <?php endforeach; ?>
+<?php endforeach; ?>
+
 </div>
+
+
 
 
 
@@ -51,6 +67,41 @@ document.querySelectorAll('.ask-routine-btn').forEach(btn => {
     });
 });
 </script>
+
+<!-- AJAX SCRIPT FOR LIKE -->
+<script>
+document.querySelectorAll('.like-btn').forEach(button => {
+    button.addEventListener('click', function() {
+
+        let uploadId = this.dataset.uploadId;
+        let btn = this;
+
+        fetch("<?= ROOT ?>/physique/like/" + uploadId, {
+            method: "POST",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.success) {
+                // Update like count
+                btn.querySelector('.like-count').textContent = data.likes;
+
+                // Toggle button color
+                if (data.liked) {
+                    btn.classList.remove('btn-outline-danger');
+                    btn.classList.add('btn-danger');
+                } else {
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-outline-danger');
+                }
+            }
+
+        });
+    });
+});
+</script>
+
 
 <?php 
 require_once __DIR__ . '/../../views/inc/footer.php';
