@@ -4,15 +4,27 @@ class PhysiqueController
 {
     use Controller;
 
-    public function index()
-    {
-        //bagong variable ng Physique model
-        $physiqueModel = $this->model('Physique');
-        $uploads = $physiqueModel->getUploadsByUser($_SESSION['user_id']);
-
-
-        $this->view('physique/feed', ['uploads' => $uploads]);
+public function index()
+{
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . ROOT . '/login');
+        exit;
     }
+
+    $physiqueModel = $this->model('Physique');
+
+    // Get uploads with username
+    $uploads = $physiqueModel->getUploadsByUser($_SESSION['user_id']);
+
+    // Add like info
+    foreach ($uploads as &$upload) {
+        $upload['liked'] = $physiqueModel->hasLiked($_SESSION['user_id'], $upload['id']) ? true : false;
+        $upload['likes'] = $physiqueModel->likeCount($upload['id']) ?? 0;
+    }
+
+    $this->view('physique/feed', ['uploads' => $uploads]);
+}
+
 
     public function upload()
     {
@@ -51,25 +63,37 @@ class PhysiqueController
 
 public function feed()
 {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . ROOT . '/login');
+        exit;
+    }
+
     $user_id = $_SESSION['user_id'];
 
     $friendModel = new Friend();
     $physiqueModel = new Physique();
 
-    // Step 1: get friends
+    //  get friends
     $friends = $friendModel->getFriends($user_id);
 
-    // Step 2: extract friend IDs
+    // extract friend IDs
     $friend_ids = array_column($friends, 'id');
 
-    // Step 3: include your own user ID
+    // include your own user ID
     $friend_ids[] = $user_id;
 
-    // Step 4: get uploads
+    //  get uploads with username
     $uploads = $physiqueModel->getFriendUploads($friend_ids);
+
+    // add like info for each upload
+    foreach ($uploads as &$upload) {
+        $upload['liked'] = $physiqueModel->hasLiked($user_id, $upload['id']) ? true : false;
+        $upload['likes'] = $physiqueModel->likeCount($upload['id']) ?? 0;
+    }
 
     $this->view('physique/feed', ['uploads' => $uploads]);
 }
+
 
 public function askRoutine($upload_id)
 {
@@ -101,7 +125,27 @@ public function askRoutine($upload_id)
 }
 
 
+public function like($upload_id)
+{
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . ROOT . '/login');
+        exit;
+    }
 
+    $user_id = $_SESSION['user_id'];
+    $physiqueModel = $this->model('Physique');
 
+    // Check if already liked
+    if ($physiqueModel->hasLiked($user_id, $upload_id)) {
+        // unlike
+        $physiqueModel->unlike($user_id, $upload_id);
+    } else {
+        //Like 
+        $physiqueModel->like($user_id, $upload_id);
+    }
+
+    header('Location: ' . ROOT . '/physique/feed');
+    exit;
+}
 
 }

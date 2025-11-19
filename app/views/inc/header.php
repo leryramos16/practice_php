@@ -32,12 +32,6 @@
         <a class="nav-link" href="<?= ROOT ?>/planner">Day Plan</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="<?= ROOT ?>/workout">Favorite Musics</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="<?= ROOT ?>/coach">Find Coach</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/phonebook">Phonebook</a>
       </li>
       <li class="nav-item">

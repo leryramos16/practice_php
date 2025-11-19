@@ -7,13 +7,20 @@ require_once __DIR__ . '/../../views/inc/header.php';
 <div class="d-flex flex-column justify-content-center align-items-center min-vh-100">
     <?php foreach ($uploads as $upload): ?>
     <div class="card mb-3" style="width:500px;">
-        <strong class="p-2"><?= htmlspecialchars($upload['username']) ?></strong>
+        <strong class="p-2"><?= htmlspecialchars($upload['username']) ?></strong> 
+        <small><?= $upload['created_at'] ?></small>
         <div style="width:500px; height:500px; overflow:hidden;">
             <img src="<?= ROOT ?>/<?= $upload['image_path'] ?>" class="card-img-top h-100 w-100" style="object-fit:cover;">
         </div>
         <div class="card-body">
             <p><?= htmlspecialchars($upload['description']) ?></p>
-            <small><?= $upload['created_at'] ?></small>
+            <form action="<?= ROOT ?>/physique/like/<?= $upload['id'] ?>" method="POST">
+    <button type="submit"
+    class="btn btn-sm <?= $upload['liked'] ? 'btn-danger' : 'btn-outline-danger' ?>">
+    <i class="bi bi-fire"></i><?= $upload['likes'] ?? 0 ?>
+</button>
+</form>
+
            <form method="post" action="<?= ROOT ?>/physique/askRoutine/<?= $upload['id'] ?>" style="display:inline;">
                 <button type="submit" class="btn btn-light mt-2">
                     Ask Routine<i class="bi bi-question"></i>

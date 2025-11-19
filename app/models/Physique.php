@@ -60,4 +60,34 @@ class Physique
 }
 
 
+    public function like($user_id, $upload_id)
+    {
+        $sql = "INSERT INTO physique_likes (user_id, upload_id) VALUES (?, ?)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$user_id, $upload_id]);
+
+    }
+
+    public function unlike($user_id, $upload_id)
+    {
+        $sql = "DELETE FROM physique_likes WHERE user_id = ? AND upload_id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$user_id, $upload_id]);
+    }
+
+    public function hasLiked($user_id, $upload_id)
+    {
+        $sql = "SELECT id FROM physique_likes WHERE user_id = ? AND upload_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$user_id, $upload_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function likeCount($upload_id)
+    {
+        $sql = "SELECT COUNT(*) FROM physique_likes WHERE upload_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$upload_id]);
+        return $stmt->fetchColumn();
+    }
 }
