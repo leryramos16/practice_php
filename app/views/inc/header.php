@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($title) ? $title : 'My App'; ?></title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </head>
 <style>
   .my-sticky {
@@ -26,7 +30,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="<?= ROOT ?>/dashboard">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="<?= ROOT ?>/dashboard">Home</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/planner">Day Plan</a>
@@ -36,6 +40,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/physique/upload">Share Physique</a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/guestmeal">Guest Meal</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/physique/feed">Friends</a>
@@ -60,17 +67,16 @@
         </div>
       </li>
     </ul>
-    <form action="<?= ROOT ?>/friends/search" method="POST" class="form-inline my-2 my-lg-0">
-  <input 
-    class="form-control mr-sm-2" 
-    type="search" 
-    name="search" 
-    placeholder="Search users..." 
-    aria-label="Search"
-   
-  >
-  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-</form>
+    <form action="<?= ROOT ?>/friends/search" method="POST" class="d-flex ms-auto">
+      <input 
+        class="form-control me-2" 
+        type="search" 
+        name="search" 
+        placeholder="Search users..." 
+        aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+
 
   </div>
 </nav>
@@ -196,7 +202,36 @@ updateAccountDropdownBadge();
 
 // Poll every 20-30 seconds
 setInterval(updateAccountDropdownBadge, 20000);
+
+
+
+// NOTIFICATION 
+
+async function updateLikeNotificationBadge() {
+  try {
+    const res = await fetch('<?= ROOT ?>/physique/notifs');
+    const data = await res.json();
+
+    const badge = document.getElementById('notification-badge');
+    if (badge) {
+      badge.textContent = data.count;
+      badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+    }
+  } catch (err) {
+    console.error("Like notification error:", err);
+  }
+}
+
+// Initial load
+updateLikeNotificationBadge();
+
+// Refresh every 20 seconds
+setInterval(updateLikeNotificationBadge, 20000);
+
+
 </script>
+
+
 
 
 

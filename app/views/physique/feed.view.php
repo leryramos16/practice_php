@@ -20,7 +20,7 @@ require_once __DIR__ . '/../../views/inc/header.php';
         <div class="card-body">
             <p><?= htmlspecialchars($upload['description']) ?></p>
 
-            <!-- LIKE BUTTON (AJAX) -->
+                <!-- LIKE BUTTON (AJAX) -->
             <button 
                 class="btn btn-sm like-btn <?= $upload['liked'] ? 'btn-danger' : 'btn-outline-danger' ?>"
                 data-upload-id="<?= $upload['id'] ?>"
