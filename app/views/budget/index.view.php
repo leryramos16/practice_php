@@ -77,12 +77,9 @@ require_once __DIR__ . '/../inc/header.php';
                 >
                  Edit   
                 </button>    
-
-                <a href="<?=  ROOT ?>/budget/delete/<?= $item['id'] ?>"
-                class="btn btn-danger btn-sm"
-                onclick="return confirm('Are you sure you want to delete this entry?')">
-                Delete
-                </a>
+                <button class="btn btn-danger btn-sm delete-btn" data-id="<?= $item['id'] ?>">
+                    Delete
+                </button>
             </td>
         </tr>
         <?php endforeach; ?>
@@ -134,6 +131,31 @@ require_once __DIR__ . '/../inc/header.php';
             </div>
      </div>
 
+     <!-- DELETE MODAL TO -->
+    
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Are you sure you want to delete this entry?
+      </div>
+
+      <div class="modal-footer">
+        <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 </div>
 
 <script>
@@ -149,6 +171,21 @@ require_once __DIR__ . '/../inc/header.php';
             document.getElementById('edit_description').value = this.dataset.description;
 
             editModal.show();
+        });
+    });
+
+    // JS ng DELETE MODAL
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+
+            confirmDeleteBtn.href = "<?= ROOT ?>/budget/delete/" + id;
+
+            deleteModal.show();
         });
     });
 </script>
