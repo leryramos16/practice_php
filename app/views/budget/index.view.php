@@ -218,6 +218,7 @@ editButtons.forEach(btn => {
 
         document.getElementById('edit_id').value = this.dataset.id;
         document.getElementById('edit_type').value = this.dataset.type;
+        updateEditCategoryModal();
         document.getElementById('edit_category').value = category;
         document.getElementById('edit_category_icon').innerHTML = categoryIcons[category] || '';
         document.getElementById('edit_amount').value = this.dataset.amount;
@@ -250,8 +251,8 @@ document.getElementById("category").addEventListener("click", function () {
 });
 
 // EDIT form category input
-document.getElementById("edit_category").addEventListener("click", function () {
-    updateCategoryModal();
+    document.getElementById("edit_category").addEventListener("click", function () {
+    updateEditCategoryModal();
     const modal = new bootstrap.Modal(document.getElementById('categoryEditModal'));
     modal.show();
 
@@ -297,6 +298,19 @@ function updateCategoryModal() {
 
 typeSelect.addEventListener('change', updateCategoryModal);
 updateCategoryModal();
+
+function updateEditCategoryModal() {
+    const editTypeSelect = document.getElementById('edit_type');
+    const isIncome = editTypeSelect.value === "income";
+
+    document.querySelectorAll('.category-option.income').forEach(el => {
+        el.style.display = isIncome ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('.category-option.expense').forEach(el => {
+        el.style.display = isIncome ? 'none' : 'block';
+    });
+}
 
 </script>
 
