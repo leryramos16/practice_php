@@ -33,17 +33,23 @@
         <a class="nav-link" href="<?= ROOT ?>/dashboard">Home</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/budget">Budget Tracker</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/planner">Day Plan</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/phonebook">Phonebook</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/subscription">Subscribe</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/physique/upload">Share Physique</a>
       </li>
-       <li class="nav-item">
+       <!--<li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/guestmeal">Guest Meal</a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/physique/feed">Friends</a>
       </li>

@@ -17,14 +17,14 @@ require_once __DIR__ . '/../inc/header.php';
 
         <div class="row g-2 mt-3">
             <div class="col-sm-2">
-                <select name="type" class="form-select">
+                <select name="type" class="form-select" id="type">
                     <option value="income">Income</option>
                     <option value="expense">Expenses</option>
                 </select>
             </div>
 
             <div class="col-sm-3">
-                <input type="text" name="category" placeholder="Category" class="form-control">
+                <input type="text" name="category" placeholder="Category" class="form-control" id="category" readonly>
             </div>
 
             <div class="col-sm-3">
@@ -108,7 +108,11 @@ require_once __DIR__ . '/../inc/header.php';
 
                             <div class="mb-2">
                                 <label>Category</label>
-                                <input type="text" name="category" class="form-control" id="edit_category">
+                                <div class="input-group">
+                                    <span class="input-group-text" id="edit_category_icon"></span>
+                                     <input type="text" name="category" class="form-control" id="edit_category" readonly>
+                                </div>
+                               
                             </div>
 
                             <div class="mb-2">
@@ -155,39 +159,145 @@ require_once __DIR__ . '/../inc/header.php';
   </div>
 </div>
 
+<!-- CATEGORY MODAL TO -->
+ <!-- CATEGORY SELECT MODAL FOR EDIT -->
+<div class="modal fade" id="categoryEditModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Select Category</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+
+            <div class="category-option income" data-value="Salary"><i class="bi bi-cash-stack"></i><br>Salary</div>
+            <div class="category-option income" data-value="Bonus"><i class="bi bi-piggy-bank"></i><br>Bonus</div>
+            <div class="category-option income" data-value="Investment"><i class="bi bi-bar-chart"></i><br>Investment</div>
+            <div class="category-option income" data-value="Other"><i class="bi bi-grid"></i><br>Other</div>
+
+            <div class="category-option expense" data-value="Food"><i class="bi bi-basket"></i><br>Food</div>
+            <div class="category-option expense" data-value="Bills"><i class="bi bi-wallet2"></i><br>Bills</div>
+            <div class="category-option expense" data-value="Transport"><i class="bi bi-truck"></i><br>Transport</div>
+            <div class="category-option expense" data-value="Shopping"><i class="bi bi-cart"></i><br>Shopping</div>
+            <div class="category-option expense" data-value="Other"><i class="bi bi-grid"></i><br>Other</div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 </div>
 
 <script>
-    const editButtons = document.querySelectorAll('.edit-btn');
-    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    
 
-    editButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.getElementById('edit_id').value = this.dataset.id;
-            document.getElementById('edit_type').value = this.dataset.type;
-            document.getElementById('edit_category').value = this.dataset.category;
-            document.getElementById('edit_amount').value = this.dataset.amount;
-            document.getElementById('edit_description').value = this.dataset.description;
 
-            editModal.show();
-        });
+
+const editButtons = document.querySelectorAll('.edit-btn');
+const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+const categoryIcons = {
+    "Salary": '<i class="bi bi-cash-stack"></i>',
+    "Food": '<i class="bi bi-basket"></i>',
+    "Bills": '<i class="bi bi-wallet2"></i>',
+    "Transport": '<i class="bi bi-truck"></i>',
+    "Shopping": '<i class="bi bi-cart"></i>',
+    "Other": '<i class="bi bi-grid"></i>'
+};
+
+editButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        const category = this.dataset.category;
+
+        document.getElementById('edit_id').value = this.dataset.id;
+        document.getElementById('edit_type').value = this.dataset.type;
+        document.getElementById('edit_category').value = category;
+        document.getElementById('edit_category_icon').innerHTML = categoryIcons[category] || '';
+        document.getElementById('edit_amount').value = this.dataset.amount;
+        document.getElementById('edit_description').value = this.dataset.description;
+
+        editModal.show();
+    });
+});
+
+// DELETE
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+const deleteButtons = document.querySelectorAll('.delete-btn');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+deleteButtons.forEach(btn => {
+    btn.addEventListener('click', function () {
+        const id = this.dataset.id;
+        confirmDeleteBtn.href = "<?= ROOT ?>/budget/delete/" + id;
+        deleteModal.show();
+    });
+});
+
+// ADD form category input
+document.getElementById("category").addEventListener("click", function () {
+    updateCategoryModal();
+    const modal = new bootstrap.Modal(document.getElementById('categoryEditModal'));
+    modal.show();
+
+    // Remember we are updating add form
+    window.currentCategoryInput = this;
+});
+
+// EDIT form category input
+document.getElementById("edit_category").addEventListener("click", function () {
+    updateCategoryModal();
+    const modal = new bootstrap.Modal(document.getElementById('categoryEditModal'));
+    modal.show();
+
+    // Remember we are updating edit form
+    window.currentCategoryInput = this;
+    
+});
+
+// SELECT CATEGORY
+document.querySelectorAll("#categoryEditModal .category-option").forEach(option => {
+    option.addEventListener("click", function () {
+        if(window.currentCategoryInput){
+            window.currentCategoryInput.value = this.dataset.value;
+        }
+        if(window.currentCategoryIcon){
+            window.currentCategoryIcon.innerHTML = categoryIcons[this.dataset.value] || '';
+        }
+        bootstrap.Modal.getInstance(document.getElementById('categoryEditModal')).hide();
+
+        // Reset
+        window.currentCategoryInput = null;
+        window.currentCategoryIcon = null;
+    });
+});
+
+
+// Type = income - lalabas ang salary
+// type = expense - lalabas ang salary
+
+const typeSelect = document.getElementById('type');
+
+function updateCategoryModal() {
+    const isIncome = typeSelect.value === "income";
+
+    document.querySelectorAll('.category-option.income').forEach(el => {
+        el.style.display = isIncome ? 'block' : 'none';
     });
 
-    // JS ng DELETE MODAL
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-
-    deleteButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const id = this.dataset.id;
-
-            confirmDeleteBtn.href = "<?= ROOT ?>/budget/delete/" + id;
-
-            deleteModal.show();
-        });
+    document.querySelectorAll('.category-option.expense').forEach(el => {
+        el.style.display = isIncome ? 'none' : 'block';
     });
+}
+
+typeSelect.addEventListener('change', updateCategoryModal);
+updateCategoryModal();
+
 </script>
 
 
