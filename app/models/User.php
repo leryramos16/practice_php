@@ -80,4 +80,12 @@ class User {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$filename, $user_id]);
     }
+
+     public function getAll()
+    {
+        
+        $sql = "SELECT * FROM users";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);  
+    }
 }
