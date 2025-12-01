@@ -1,63 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Workout</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+<?php
+$title = "Add Workout";
+include 'inc/header.php';
+?>
 
-<div class="container mt-5">
-    
-    <?php
-         //show error
-         if (isset($_SESSION['error'])): ?>
-    <div class="alert alert-danger" role="alert">
-        <?= $_SESSION['error']; ?>
-    </div>
-    <?php unset($_SESSION['error']); ?>
-    <?php endif; ?>
-    <h2 class="mb-4 text-center">Add a Workout</h2>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
 
-    <form method="POST" action="<?= ROOT ?>/workout/add" class="card p-4 shadow-sm">
+      <?php if (isset($_SESSION['error'])): ?>
+      <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
+      <?php unset($_SESSION['error']); endif; ?>
 
-    <div class="mb-3">
-            <label for="exercise" class="form-label">Exercise</label>
-            <input list="exerciseList" class="form-control" id="exercise" name="exercise" required>
-                <datalist id="exerciseList">
-                    <option value="Push-ups">
-                    <option value="Sit-ups">
-                    <option value="Squats">
-                    <option value="Plank">
-                    <option value="Burpees">
-                    <option value="Jumping Jacks">
-                    <option value="Lunges">
-                    <option value="Pull-ups">
-                </datalist>
-    </div>
+      <h2 class="mb-3 text-center">Add a Workout</h2>
 
-    <div class="text-center">
-        <img id="exercisePreview" src="" style="max-width:100px; display:none; margin-top:0px; border-radius:5px;">
-    </div>
-
+      <form method="POST" action="<?= ROOT ?>/workout/add" class="card p-4 shadow-sm">
 
         <div class="mb-3">
-            <label for="reps" class="form-label">Reps</label>
-            <input type="number" class="form-control" id="reps" name="reps" min="1" required>
+          <label for="exercise" class="form-label">Exercise</label>
+          <input list="exerciseList" class="form-control" id="exercise" name="exercise" required>
+          <datalist id="exerciseList">
+            <option value="Push-ups">
+            <option value="Sit-ups">
+            <option value="Squats">
+            <option value="Plank">
+            <option value="Burpees">
+            <option value="Jumping Jacks">
+            <option value="Lunges">
+            <option value="Pull-ups">
+          </datalist>
+        </div>
+
+        <div class="text-center mb-3">
+          <img id="exercisePreview" src="" style="max-width:100%; height:auto; display:none; border-radius:5px;">
         </div>
 
         <div class="mb-3">
-            <label for="sets" class="form-label">Sets</label>
-            <input type="number" class="form-control" id="sets" name="sets" min="1" required>
+          <label for="reps" class="form-label">Reps</label>
+          <select class="form-select" name="reps" id="reps" required>
+            <option value="" disabled selected hidden>-- How many reps? -- </option>
+            <option>5</option>
+            <option>8</option>
+            <option>10</option>
+            <option>12</option>
+            <option>15</option>
+            <option>20</option>   
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="sets" class="form-label">Sets</label>
+          <select class="form-select" name="sets" id="sets" required>
+            <option value="" disabled selected hidden>Select sets </option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+          
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Add Workout</button>
-    </form>
+      </form>
 
-    <div class="text-center mt-3">
+      <div class="text-center mt-3">
         <a href="<?= ROOT ?>/dashboard" class="text-decoration-none">← Back to Dashboard</a>
+      </div>
+
     </div>
+  </div>
 </div>
+
+
 
 
 <script>
