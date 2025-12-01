@@ -52,4 +52,17 @@ class Workout
             return $result ? $result['total_workouts'] : 0;
            
        }
+
+       public function getFavoriteExercise($user_id)
+       {
+          $sql = "SELECT exercise, COUNT(*) AS count
+                  FROM workouts
+                  WHERE user_id = ?
+                  GROUP BY exercise
+                  ORDER by count DESC
+                  LIMIT 1";
+          $stmt = $this->db->prepare($sql);
+          $stmt->execute([$user_id]);
+          return $stmt->fetch(PDO::FETCH_ASSOC);
+       }
 }

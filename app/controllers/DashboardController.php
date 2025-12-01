@@ -39,8 +39,11 @@ class DashboardController
         
         //Call model
          $this->workoutModel = $this->model('Workout');
+         
          //count workout per week
           $weeklyWorkouts = $this->workoutModel->countThisWeek($user_id);
+
+          
 
         if ($weeklyWorkouts == 0) {
             $workoutMessage = 'Start your weekly workout Now!';
@@ -80,6 +83,9 @@ class DashboardController
         //Get all workouts for this user or Fetch
         $workouts = $this->workoutModel->getAllByUser($user_id);
 
+        $favorite = $this->workoutModel->getFavoriteExercise(($user_id));
+        $favoriteExercise = $favorite['exercise'] ?? '-';
+
         //Count total workouts
         $totalWorkouts = count($workouts);
 
@@ -108,7 +114,8 @@ class DashboardController
             'weeklyWorkouts' => $weeklyWorkouts,
             'workoutMessage' => $workoutMessage,
             'upcomingTasks' => $upcomingTasks,
-            'profile_image' => $user['profile_image'] ?? 'default.jpg'
+            'profile_image' => $user['profile_image'] ?? 'default.jpg',
+            'favoriteExercise' => $favoriteExercise
 
         ];
 
