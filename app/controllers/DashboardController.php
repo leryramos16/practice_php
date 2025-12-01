@@ -39,7 +39,15 @@ class DashboardController
         
         //Call model
          $this->workoutModel = $this->model('Workout');
-         
+
+         $limit = 1;
+         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+         $offset = ($page - 1) * $limit;
+
+         $workouts = $this->workoutModel->getByUserPaginated($user_id, $limit, $offset);
+         $totalWorkouts = $this->workoutModel->countAllByUser($user_id);
+         $totalPages = ceil($totalWorkouts / $limit);
+
          //count workout per week
           $weeklyWorkouts = $this->workoutModel->countThisWeek($user_id);
 
@@ -78,10 +86,6 @@ class DashboardController
         }
        
         
-       
-
-        //Get all workouts for this user or Fetch
-        $workouts = $this->workoutModel->getAllByUser($user_id);
 
         $favorite = $this->workoutModel->getFavoriteExercise(($user_id));
         $favoriteExercise = $favorite['exercise'] ?? '-';
@@ -110,6 +114,8 @@ class DashboardController
             'workouts' => $workouts,
             'totalWorkouts' => $totalWorkouts,
             'lastWorkoutDate' => $lastWorkoutDate,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
             'success' => $success,
             'weeklyWorkouts' => $weeklyWorkouts,
             'workoutMessage' => $workoutMessage,

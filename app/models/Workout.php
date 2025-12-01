@@ -65,4 +65,28 @@ class Workout
           $stmt->execute([$user_id]);
           return $stmt->fetch(PDO::FETCH_ASSOC);
        }
+
+       public function getByUserPaginated($user_id, $limit, $offset)
+       {
+          $sql = "SELECT * FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT $limit OFFSET $offset";
+          $stmt = $this->db->prepare($sql);
+          $stmt->execute([$user_id]);
+          $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+          foreach ($results as &$row) {
+               $row['formatted_date'] = date("F j, Y", strtotime($row['date']));
+          }
+
+          return $results;
+
+       }
+
+       public function countAllByUser($user_id)
+       {
+          $sql = "SELECT COUNT(*) as total FROM workouts WHERE user_id = ?";
+          $stmt = $this->db->prepare($sql);
+          $stmt->execute([$user_id]);
+          $result = $stmt->fetch(PDO::FETCH_ASSOC);
+          return $result ? $result['total'] : 0;
+       }
 }

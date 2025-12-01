@@ -143,10 +143,8 @@ include 'inc/header.php';
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody id="workout-rows">
-                <?php foreach ($workouts as $index => $w): ?>
-                  <!-- Show 10 rows lang-->
-                  <tr class="workout-row <?= $index >= 10 ? 'd-none' : '' ?>">
+              <tbody>
+                <?php foreach ($workouts as $w): ?>
                     <td><?= htmlspecialchars($w['exercise']); ?></td>
                     <td><?= htmlspecialchars($w['reps']); ?></td>
                     <td><?= htmlspecialchars($w['sets']); ?></td>
@@ -155,13 +153,31 @@ include 'inc/header.php';
                 <?php endforeach; ?>
               </tbody>
             </table>
-            <?php if (count($workouts) > 10): ?>
-              <button id="show-more" class="btn btn-link mt-2">Show more</button>
-              <button id="show-less" class="btn btn-link mt-2 d-none">Show Less</button>
-              <?php endif; ?>
-          <?php else: ?>
-            <p class="text-muted">No workouts recorded yet. Start your first one!</p>
-          <?php endif; ?>
+
+            <!-- Pagination ng BOOTSTRAP -->
+             <nav aria-label="Workout pagination">
+                  <ul class="pagination justify-content-center">
+
+                  <li class="page-item <?= ($currentPage <= 1) ? 'disabled' : '' ?>">
+                      <a class="page-link" href="?page=<?= $currentPage - 1 ?>">Previous</a>
+                  </li>
+
+
+                    <?php for($i = 1; $i <=$totalPages; $i++): ?>
+                      <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                      </li>
+                    <?php endfor; ?>
+
+                    <li class="page-item <?= ($currentPage >= $totalPages) ? 'disabled' : '' ?>">
+                      <a class="page-link" href="?page=<?= $currentPage + 1 ?>">Next</a>
+                    </li>
+
+                  </ul>
+             </nav>
+           <?php else: ?>
+            <p class="text-muted">No workouts recorded.</p>
+           <?php endif; ?>
         </div>
       </div>
     </div>
