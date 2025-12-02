@@ -67,19 +67,23 @@ class Workout
        }
 
        public function getByUserPaginated($user_id, $limit, $offset)
-       {
-          $sql = "SELECT * FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT $limit OFFSET $offset";
-          $stmt = $this->db->prepare($sql);
-          $stmt->execute([$user_id]);
-          $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+{
+    // Ensure limit and offset are integers
+    $limit = (int)$limit;
+    $offset = (int)$offset;
 
-          foreach ($results as &$row) {
-               $row['formatted_date'] = date("F j, Y", strtotime($row['date']));
-          }
+    $sql = "SELECT * FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT $limit OFFSET $offset";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$user_id]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-          return $results;
+    foreach ($results as &$row) {
+        $row['formatted_date'] = date("F j, Y", strtotime($row['date']));
+    }
 
-       }
+    return $results;
+}
+
 
        public function countAllByUser($user_id)
        {

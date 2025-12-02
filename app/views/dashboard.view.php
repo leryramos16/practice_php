@@ -143,7 +143,9 @@ include 'inc/header.php';
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
+            
+              <tbody id="workout-container">
+                <tr>
                 <?php foreach ($workouts as $w): ?>
                     <td><?= htmlspecialchars($w['exercise']); ?></td>
                     <td><?= htmlspecialchars($w['reps']); ?></td>
@@ -151,6 +153,7 @@ include 'inc/header.php';
                     <td><?= date("F j, Y ", strtotime($w['date'])); ?></td>
                   </tr>
                 <?php endforeach; ?>
+            
               </tbody>
             </table>
 
@@ -159,18 +162,18 @@ include 'inc/header.php';
                   <ul class="pagination justify-content-center">
 
                   <li class="page-item <?= ($currentPage <= 1) ? 'disabled' : '' ?>">
-                      <a class="page-link" href="?page=<?= $currentPage - 1 ?>">Previous</a>
+                      <a class="page-link page-btn" data-page="<?= $currentPage - 1 ?>">Previous</a>
                   </li>
 
 
                     <?php for($i = 1; $i <=$totalPages; $i++): ?>
                       <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                        <a class="page-link page-btn" data-page="<?= $i ?>"><?= $i ?></a>
                       </li>
                     <?php endfor; ?>
 
                     <li class="page-item <?= ($currentPage >= $totalPages) ? 'disabled' : '' ?>">
-                      <a class="page-link" href="?page=<?= $currentPage + 1 ?>">Next</a>
+                      <a class="page-link page-btn" data-page="<?= $currentPage + 1 ?>">Next</a>
                     </li>
 
                   </ul>
@@ -207,31 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
   myModal.show(); //  This automatically opens the modal when page loads
 });
 
-// Reveal more rows Javascript gamit
-// SHOW MORE
-document.getElementById("show-more")?.addEventListener("click", function () {
-  const hiddenRows = document.querySelectorAll(".workout-row.d-none");
 
-  hiddenRows.forEach(row => row.classList.remove("d-none"));
-
-  // Hide Show More, show Show Less
-  this.classList.add("d-none");
-  document.getElementById("show-less").classList.remove("d-none");
-});
-
-// SHOW LESS
-document.getElementById("show-less")?.addEventListener("click", function () {
-  const rows = document.querySelectorAll(".workout-row");
-
-  // Hide everything after the first 10
-  rows.forEach((row, index) => {
-    if (index >= 10) row.classList.add("d-none");
-  });
-
-  // Hide Show Less, show Show More
-  this.classList.add("d-none");
-  document.getElementById("show-more").classList.remove("d-none");
-});
 
 </script>
 
@@ -307,6 +286,34 @@ setInterval(() => {
     getWeatherByCity();
   }
 }, 600000);
+
+//AJAX SCRIPT NG CHANGING PAGE
+function setupPaginationLinks() {
+  document.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', async function(e) {
+      e.preventDefault();
+
+      const page = this.dataset.page;
+
+      const res = await fetch(`<?= ROOT ?>/dashboard?page=${page}`, {cache:"no-cache"});
+      const html = await res.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      document.querySelector('#workout-container')
+        .innerHTML = doc.querySelector('#workout-container').innerHTML;
+
+      document.querySelector('nav[aria-label="Workout pagination"]')
+        .innerHTML = doc.querySelector('nav[aria-label="Workout pagination"]').innerHTML;
+
+      setupPaginationLinks(); // re-attach events!
+    });
+  });
+}
+
+// initial attach
+setupPaginationLinks();
 </script>
 
 

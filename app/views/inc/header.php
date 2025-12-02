@@ -36,6 +36,9 @@
         <a class="nav-link" href="<?= ROOT ?>/budget">Budget Tracker</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="<?= ROOT ?>/usage">Water/Electric Usage</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="<?= ROOT ?>/planner">Day Plan</a>
       </li>
       <li class="nav-item">

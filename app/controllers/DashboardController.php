@@ -91,7 +91,7 @@ class DashboardController
         $favoriteExercise = $favorite['exercise'] ?? '-';
 
         //Count total workouts
-        $totalWorkouts = count($workouts);
+        $totalWorkouts = $this->workoutModel->countAllByUser($user_id);
 
         //Find most recent workout date (if any)
         if (!empty($workouts)) {
