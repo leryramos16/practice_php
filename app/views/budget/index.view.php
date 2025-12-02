@@ -3,6 +3,25 @@ $title = 'Budget Planner';
 require_once __DIR__ . '/../inc/header.php';
 ?>
 
+
+<div class="charts-container" style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;">
+    <div style="flex:1; min-width:250px; height:250px;">
+        <h5 class="text-center mb-10">Expenses Report</h5>
+        <canvas id="categoryChart"></canvas>
+    </div>
+    <div style="flex:1; min-width:250px; height:250px;">
+        <h5 class="text-center">Monthly Report</h5>
+        <canvas id="monthlyChart"></canvas>
+    </div>
+    <div style="flex:1; min-width:250px; height:250px;">
+        <h5 class="text-center">Weekly Report</h5>
+        <canvas id="weeklyChart"></canvas>
+    </div>
+    
+</div>
+
+
+
 <div class="container mt-4">
     <h3>Budget Tracker</h3>
 
@@ -44,9 +63,10 @@ require_once __DIR__ . '/../inc/header.php';
     <hr>
         
     <div class="mt-4">
-        <p><strong>Total Income:</strong> <?= $data['totals']['total_income'] ?? 0 ?></p>
-        <p><strong>Total Expenses:</strong> <?= $data['totals']['total_expense'] ?? 0 ?></p>
-        <p><strong>Balance:</strong> <?= ($data['totals']['total_income'] ?? 0) - ($data['totals']['total_expense'] ?? 0) ?></p>
+        <h3>Total Income: <?= number_format($data['totals']['total_income'],2) ?></h3>
+        <h3>Total Expense: <?= number_format($data['totals']['total_expense'],2) ?></h3>
+        <h3>Balance: <?= number_format($data['totals']['total_income'] - $data['totals']['total_expense'],2) ?></h3>
+
     </div>
 
     <table class="table table-bordered mt-3">
@@ -312,6 +332,103 @@ function updateEditCategoryModal() {
     });
 }
 
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const ctx = document.getElementById('monthlyChart').getContext('2d');
+
+const months = <?= json_encode(array_column($data['monthlyReport'], 'month')) ?>;
+const incomeData = <?= json_encode(array_column($data['monthlyReport'], 'total_income')) ?>;
+const expenseData = <?= json_encode(array_column($data['monthlyReport'], 'total_expense')) ?>;
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: months,
+        datasets: [
+            {
+                label: 'Income',
+                data: incomeData,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            },
+            {
+                label: 'Expense',
+                data: expenseData,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false, // allows custom height
+        scales: { y: { beginAtZero: true } }
+    }
+});
+</script>
+
+
+<!-- SA WEEKLY CHART TO -->
+<script>
+const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+
+const weeks = <?= json_encode(array_column($data['weeklyReport'], 'week')) ?>;
+const weeklyIncome = <?= json_encode(array_column($data['weeklyReport'], 'total_income')) ?>;
+const weeklyExpense = <?= json_encode(array_column($data['weeklyReport'], 'total_expense')) ?>;
+
+new Chart(weeklyCtx, {
+    type: 'bar',
+    data: {
+        labels: weeks,
+        datasets: [
+            {
+                label: 'Income',
+                data: weeklyIncome,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            },
+            {
+                label: 'Expense',
+                data: weeklyExpense,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+<!-- CATEGORY PIE CHART -->
+ <script>
+const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+
+const categories = <?= json_encode(array_column($data['categoryReport'], 'category')) ?>;
+const categoryTotals = <?= json_encode(array_column($data['categoryReport'], 'total')) ?>;
+
+new Chart(categoryCtx, {
+    type: 'pie',
+    data: {
+        labels: categories,
+        datasets: [{
+            data: categoryTotals,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+            ],
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
 </script>
 
 

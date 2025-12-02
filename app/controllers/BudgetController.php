@@ -20,10 +20,18 @@ class BudgetController
 
         $totals = $budgetModel->getTotals($user_id);
 
+        $monthlyReport = $budgetModel->getMonthlyReport($user_id);
+
+        $weeklyReport = $budgetModel->getWeeklyReport($user_id);
+        $categoryReport = $budgetModel->getCategoryReport($user_id);
+
         $data = [
             'username' => $_SESSION['username'],
             'entries' => $entries,
-            'totals' => $totals
+            'totals' => $totals,
+            'monthlyReport' => $monthlyReport,
+            'weeklyReport' => $weeklyReport,
+            'categoryReport' => $categoryReport
         ];
 
         $this->view('budget/index', $data);
