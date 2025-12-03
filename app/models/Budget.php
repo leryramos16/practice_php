@@ -54,8 +54,9 @@ class Budget
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$type, $category, $amount, $description, $id]);
     }
-
-    public function getMonthlyReport($user_id)
+    
+   
+     public function getMonthlyReport($user_id)
 {
     $sql = "SELECT 
                 DATE_FORMAT(date_created, '%Y-%m') AS month,
@@ -101,6 +102,65 @@ class Budget
     $stmt->execute([$user_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+   public function getPaginated($user_id, $limit, $offset, $filter_date = null)
+{
+    $limit = (int)$limit;
+    $offset = (int)$offset;
+    $user_id = (int)$user_id;
+
+    if ($filter_date) {
+        $sql = "SELECT * FROM budget_entries
+                WHERE user_id = :user_id
+                  AND DATE(date_created) = :filter_date
+                ORDER BY date_created DESC
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':filter_date', $filter_date);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    } else {
+        $sql = "SELECT * FROM budget_entries
+                WHERE user_id = :user_id
+                ORDER BY date_created DESC
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    }
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+    public function countAll($user_id, $filter_date = null)
+{
+    if ($filter_date) {
+        $sql = "SELECT COUNT(*) AS total
+                FROM budget_entries
+                WHERE user_id = :user_id
+                  AND DATE(date_created) = :filter_date";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $user_id,
+            ':filter_date' => $filter_date
+        ]);
+    } else {
+        $sql = "SELECT COUNT(*) AS total
+                FROM budget_entries
+                WHERE user_id = :user_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':user_id' => $user_id]);
+    }
+
+    return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+}
+
+
 
 
     

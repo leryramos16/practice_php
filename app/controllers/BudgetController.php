@@ -6,22 +6,46 @@ class BudgetController
 {
     use Controller;
 
-    public function index()
+      public function index()
     {
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . ROOT . '/login');
+            exit;
         }
 
         $budgetModel = $this->model('Budget');
         $user_id = $_SESSION['user_id'];
 
-        // kunin lahat ng budget entries sa user na to
-        $entries = $budgetModel->getAllByUser($user_id);
+        // --- Pagination ---
+        $limit = 7;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
 
+        // --- Filter Date ---
+        $filter_date = $_GET['filter_date'] ?? null;
+
+        // Fetch correct dataset
+        if ($filter_date) {
+            // Filter mode: still use pagination
+            $entries = $budgetModel->getPaginated($user_id, $limit, $offset, $filter_date);
+            $total = $budgetModel->countAll($user_id, $filter_date);
+        } else {
+            // Normal mode
+            $entries = $budgetModel->getPaginated($user_id, $limit, $offset);
+            $total = $budgetModel->countAll($user_id);
+        }
+
+        // Format dates
+        foreach ($entries as &$item) {
+            $item['date_created_formatted'] = date('M d, Y', strtotime($item['date_created']));
+        }
+
+        $totalPages = ceil($total / $limit);
+
+        // Stats
         $totals = $budgetModel->getTotals($user_id);
-
         $monthlyReport = $budgetModel->getMonthlyReport($user_id);
-
         $weeklyReport = $budgetModel->getWeeklyReport($user_id);
         $categoryReport = $budgetModel->getCategoryReport($user_id);
 
@@ -29,13 +53,15 @@ class BudgetController
             'username' => $_SESSION['username'],
             'entries' => $entries,
             'totals' => $totals,
+            'filter_date' => $filter_date,
             'monthlyReport' => $monthlyReport,
             'weeklyReport' => $weeklyReport,
-            'categoryReport' => $categoryReport
+            'categoryReport' => $categoryReport,
+            'page' => $page,
+            'totalPages' => $totalPages
         ];
 
         $this->view('budget/index', $data);
-        
     }
 
     public function add()
@@ -95,6 +121,48 @@ class BudgetController
         exit;
     }
 }
+
+    // AJAX pagination + filtering
+    public function fetchEntries()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['error' => 'Not logged in']);
+            exit;
+        }
+
+        $user_id = $_SESSION['user_id'];
+        $budgetModel = $this->model('Budget');
+
+        $limit = 7;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+
+        $filter_date = $_GET['filter_date'] ?? null;
+
+        // Unified logic (same as index)
+        if ($filter_date) {
+            $entries = $budgetModel->getPaginated($user_id, $limit, $offset, $filter_date);
+            $total = $budgetModel->countAll($user_id, $filter_date);
+        } else {
+            $entries = $budgetModel->getPaginated($user_id, $limit, $offset);
+            $total = $budgetModel->countAll($user_id);
+        }
+
+        // Format dates
+        foreach ($entries as &$item) {
+            $item['date_created_formatted'] = date('M d, Y', strtotime($item['date_created']));
+        }
+
+        $totalPages = ceil($total / $limit);
+
+        echo json_encode([
+            'entries' => $entries,
+            'page' => $page,
+            'totalPages' => $totalPages
+        ]);
+        exit;
+    }
 
 
 
