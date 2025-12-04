@@ -16,7 +16,13 @@ include 'inc/header.php';
 
           <div class="mb-3">
               <label>Phonenumber</label>
-              <input type="text" name="phone" class="form-control" required>
+              <input type="text"
+                name="phone"
+                pattern="09[0-9]{9}"
+                maxlength="11"
+                class="form-control"
+                required>
+
           </div>
 
           <button type="submit" class="btn btn-success w-100">Save Contact</button>

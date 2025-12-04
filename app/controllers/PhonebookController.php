@@ -30,25 +30,38 @@ class PhonebookController
         $this->view('phonebook', $data);
     }
 
-    public function add()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $user_id = $_SESSION['user_id'];
-            $name = trim($_POST['name']);
-            $phonenumber = trim($_POST['phone']);
+  public function add()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            if(!empty($name) && !empty($phonenumber)) {
-                $phonebookModel = $this->model('Phonebook');
-                $phonebookModel->add($user_id, $name, $phonenumber);
-                $_SESSION['success'] = "Contact added successfully!";
-            } else {
-                $_SESSION['error'] = "Name and phone are required.";
-            }
-                header('Location: ' . ROOT . '/phonebook');
-                exit;
+        $user_id = $_SESSION['user_id'];
+        $name = trim($_POST['name']);
+        $phonenumber = trim($_POST['phone']);
+
+        // Check required fields
+        if (empty($name) || empty($phonenumber)) {
+            $_SESSION['error'] = "Name and phone are required.";
         }
-            $this->view('add_contact');
+        // Validate phone number format: must start with 09 and be 11 digits
+        elseif (!preg_match('/^09[0-9]{9}$/', $phonenumber)) {
+            $_SESSION['error'] = "Phone number must start with 09 and be 11 digits.";
+        }
+        else {
+            // All good — save to database
+            $phonebookModel = $this->model('Phonebook');
+            $phonebookModel->add($user_id, $name, $phonenumber);
+            $_SESSION['success'] = "Contact added successfully!";
+        }
+
+        // Redirect back to phonebook page
+        header('Location: ' . ROOT . '/phonebook');
+        exit;
     }
+
+    // If GET request, show the add contact view
+    $this->view('add_contact');
+}
+
 
     public function delete($id)
     {
@@ -72,6 +85,12 @@ class PhonebookController
 
             // Update in the database
             $phonebookModel->update($id, $name, $phonenumber);
+
+        if (!preg_match('/^09[0-9]{9}$/', $phonenumber)) {
+        $_SESSION['error'] = "Phone number must start with 09 and be 11 digits.";
+        header('Location: ' . ROOT . '/phonebook/edit/' . $id);
+        exit;
+    }
             
             $_SESSION['success'] = "Updated successfully!";
             //Redirect back to phonebook list

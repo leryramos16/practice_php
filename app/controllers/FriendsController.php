@@ -77,25 +77,35 @@ class FriendsController
         $this->view('friends/requests', ['requests' => $requests]);
     }
 
- public function search()
+public function search()
 {
     $user_id = $_SESSION['user_id'];
     $friendModel = $this->model('Friend');
-
     $results = [];
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['search'])) {
+    // When search form is submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $keyword = trim($_POST['search']);
-        $results = $friendModel->searchUsers($keyword, $user_id);
 
-        // Optional: remove this loop if SQL already provides friend_status
-        // foreach ($results as &$user) {
-        //     $user['friend_status'] = $friendModel->getStatus($user_id, $user['id']);
-        // }
+        // Store keyword temporarily to avoid re-submission warning
+        $_SESSION['search_keyword'] = $keyword;
+
+        // Redirect so refresh won’t submit the form again
+        header('Location: ' . ROOT . '/friends/search');
+        exit;
+    }
+
+    // After redirect (GET request)
+    if (!empty($_SESSION['search_keyword'])) {
+        $keyword = $_SESSION['search_keyword'];
+        unset($_SESSION['search_keyword']);  // remove after use
+
+        $results = $friendModel->searchUsers($keyword, $user_id);
     }
 
     $this->view('friends/search', ['results' => $results]);
 }
+
 
 
     public function cancel($receiver_id)
