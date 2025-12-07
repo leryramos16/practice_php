@@ -164,6 +164,59 @@ class BudgetController
         exit;
     }
 
+    public function generateReport()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . ROOT . '/login');
+            exit;
+        }
+
+        $user_id = $_SESSION['user_id'];
+
+        // Load your model
+        $budgetModel = $this->model('Budget'); 
+        $entries = $budgetModel->getAllByUser($user_id);
+
+        // Calculate totals
+        $total_income = 0;
+        $total_expense = 0;
+        foreach($entries as $entry){
+            if($entry['type'] == 'income') $total_income += $entry['amount'];
+            else $total_expense += $entry['amount'];
+        }
+
+        // Include TCPDF
+        require_once __DIR__ . '/../../vendor/tecnickcom/tcpdf/tcpdf.php'; // or wherever you put TCPDF
+
+        $pdf = new TCPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('helvetica', '', 12);
+
+        // Build HTML
+        $html = '<h2>Money Tracker Report</h2>';
+        $html .= '<p><strong>Total Income:</strong> ' . number_format($total_income,2) . '</p>';
+        $html .= '<p><strong>Total Expense:</strong> ' . number_format($total_expense,2) . '</p>';
+        $html .= '<p><strong>Balance:</strong> ' . number_format($total_income - $total_expense,2) . '</p>';
+
+        $html .= '<table border="1" cellpadding="5">
+        <tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th><th>Note</th></tr>';
+
+        foreach($entries as $entry){
+            $html .= "<tr>
+                <td>{$entry['date_created']}</td>
+                <td>{$entry['type']}</td>
+                <td>{$entry['category']}</td>
+                <td>".number_format($entry['amount'],2)."</td>
+                <td>" . ($entry['note'] ?? '') . "</td>
+            </tr>";
+        }
+
+        $html .= '</table>';
+
+        $pdf->writeHTML($html);
+        $pdf->Output('money_tracker_report.pdf', 'I');
+    }
+
 
 
 }

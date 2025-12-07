@@ -6,6 +6,8 @@ require_once __DIR__ . '/../inc/header.php';
 
 <div class="container mt-4">
     <h3>Money Tracker</h3>
+    <a href="<?= ROOT ?>/budget/generateReport" class="btn btn-primary">Download PDF Report</a>
+
     
 <div class="charts-container" style="display:flex; gap:20px; flex-wrap:wrap; margin-top:10px;">
     <div style="flex:1; min-width:250px; height:250px; mb-10">
